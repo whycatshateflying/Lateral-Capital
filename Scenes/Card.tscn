@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://cgqekym10df1u"]
+
+[ext_resource type="Script" uid="uid://d1as4o0mtq0sc" path="res://Scripts/Card.gd" id="1_pnb5n"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_u4fkt"]
+load_path = "res://.godot/imported/Playtest-card.jpg-11d639bc49719f95ad6ae2109139d5f0.ctex"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2o32f"]
+size = Vector2(178, 252)
+
+[node name="Card" type="Node2D" unique_id=1412666370]
+script = ExtResource("1_pnb5n")
+
+[node name="CardImage" type="Sprite2D" parent="." unique_id=1270786099]
+scale = Vector2(0.3, 0.3)
+texture = SubResource("CompressedTexture2D_u4fkt")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=438883073]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2137045480]
+shape = SubResource("RectangleShape2D_2o32f")
+
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
