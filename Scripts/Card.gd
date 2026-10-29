@@ -1,7 +1,7 @@
 extends Node2D
 
 var id: int
-var inContainer = false
+var inContainer
 signal hovered
 signal hovered_off
 
