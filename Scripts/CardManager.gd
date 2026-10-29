@@ -57,7 +57,7 @@ func HandleMouseEvents(event):
 	elif event.button_index == MOUSE_BUTTON_MIDDLE && event.is_pressed():
 		var cardContainerBelow = RaycastCheckForCardContainer()
 		if cardContainerBelow:
-			cardContainerBelow.SetMaxCardsAndScaleSelf(1)
+			cardContainerBelow.canPullCardsFrom = !cardContainerBelow.canPullCardsFrom
 
 # Called by a card when it spawns. Assigns the ids and increases the number of total cards in existence
 # Should change to include an array/list of all cards to properly z order and the like
@@ -107,7 +107,9 @@ func OnMouseRelease(_card):
 func StartDrag(card = null):
 	if card.inContainer && card.inContainer.canPullCardsFrom:
 		card.inContainer.TryRemoveCard(card)
-	cardBeingDragged = card
+		cardBeingDragged = card
+	elif !card.inContainer:
+		cardBeingDragged = card
 
 # Called to end dragging any card
 func EndDrag():

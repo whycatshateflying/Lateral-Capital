@@ -4,12 +4,15 @@ const PADDING = .1				# Percentage of a card width that should be used as spacin
 var cardsInContainer = []
 var maxCardsInSelf: int = 4
 var originalScale: Vector2
-var canPullCardsFrom = true
+var canPullCardsFrom = false
 
 # When first instantiated
 func _ready():
 	originalScale = scale
 	SetMaxCardsAndScaleSelf(maxCardsInSelf)
+
+func _process(_delta: float) -> void:
+	pass
 
 func SetMaxCardsAndScaleSelf(numCards):
 	maxCardsInSelf = numCards
