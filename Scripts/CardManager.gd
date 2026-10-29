@@ -58,6 +58,7 @@ func HandleMouseEvents(event):
 		var cardContainerBelow = RaycastCheckForCardContainer()
 		if cardContainerBelow:
 			cardContainerBelow.canPullCardsFrom = !cardContainerBelow.canPullCardsFrom
+			cardContainerBelow.canPutCardsInto = !cardContainerBelow.canPutCardsInto
 
 # Called by a card when it spawns. Assigns the ids and increases the number of total cards in existence
 # Should change to include an array/list of all cards to properly z order and the like
@@ -113,9 +114,9 @@ func StartDrag(card = null):
 
 # Called to end dragging any card
 func EndDrag():
-	var cardContainerBelowMouse = RaycastCheckForCardContainer()
-	if cardBeingDragged and cardContainerBelowMouse:
-		cardContainerBelowMouse.TryAddCard(cardBeingDragged)
+	var cardContainerBelow = RaycastCheckForCardContainer()
+	if cardBeingDragged and cardContainerBelow and cardContainerBelow.canPutCardsInto:
+		cardContainerBelow.TryAddCard(cardBeingDragged)
 	var cardThatWasBeingDragged = cardBeingDragged
 	cardBeingDragged = null
 	return cardThatWasBeingDragged

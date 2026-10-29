@@ -5,6 +5,7 @@ var cardsInContainer = []
 var maxCardsInSelf: int = 4
 var originalScale: Vector2
 var canPullCardsFrom = false
+var canPutCardsInto = true
 
 # When first instantiated
 func _ready():
@@ -33,8 +34,10 @@ func TryAddCard(card):
 
 func TryRemoveCard(card):
 	print("TryRemoveCard called!")
-	cardsInContainer.erase(card)
-	UpdatePositions()
+	if card in cardsInContainer:
+		card.inContainer = null
+		cardsInContainer.erase(card)
+		UpdatePositions()
 
 # Make every card in the container spaced evenly
 func UpdatePositions():
