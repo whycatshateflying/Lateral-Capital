@@ -4,14 +4,13 @@
 [ext_resource type="Texture2D" uid="uid://c2be56s27jlj0" path="res://Images/Empty-container.png" id="2_8pqlr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2o32f"]
-size = Vector2(212, 296)
+size = Vector2(644, 900)
 
 [node name="CardContainer" type="Node2D" unique_id=1291573236]
 script = ExtResource("1_ca1lr")
 
 [node name="CardContainerImage" type="Sprite2D" parent="." unique_id=1234801582]
 position = Vector2(7.987022e-06, 1.5377998e-05)
-scale = Vector2(0.33, 0.33)
 texture = ExtResource("2_8pqlr")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=1709587843]
