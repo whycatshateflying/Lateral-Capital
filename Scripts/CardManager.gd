@@ -14,6 +14,7 @@ var cardDragMode = cardDragModes.HOLD
 								# TOGGLE: click to pick up a card, and click to put it back down
 								# Goal is to make this obsolete, and automatically detect a "long" press
 var scaleForHover = Vector2(1.05, 1.05)	# Scale as a percentage of the og scale (stored in the GAME_SCALE const)
+var allCards = []				# Holds every card for z index calculations
 
 #region Startup, every frame and input/event handling
 # Called when the node enters the scene tree for the first time.
@@ -55,9 +56,10 @@ func HandleMouseEvents(event):
 			cardDragMode = cardDragModes.TOGGLE
 		print("[DEBUG] Grab mode is now " + str(["TOGGLE", "HOLD"][cardDragMode]))
 	elif event.button_index == MOUSE_BUTTON_MIDDLE && event.is_pressed():
-		var cardContainerBelow = RaycastCheckForCardContainer()
-		if cardContainerBelow:
-			cardContainerBelow.SetMaxCardsAndScaleSelf(cardContainerBelow.maxCardsInSelf + 1)
+		var cardBelowMouse = RaycastCheckForCard()
+		if cardBelowMouse:
+			cardBelowMouse.Flip()
+			print("[DEBUG] Flipping card " + cardBelowMouse.name)
 
 # Called by a card when it spawns. Assigns the ids and increases the number of total cards in existence
 # Should change to include an array/list of all cards to properly z order and the like
@@ -65,9 +67,10 @@ func OnCardSpawn(card):
 	ConnectCardSignals(card)
 	numCards += 1
 	card.scale = GameVariables.GAME_SCALE
-	card.id = numCards
-	card.z_index = -numCards
-	card.position = Vector2(numCards, 450)
+	allCards.append(card)
+	UpdateZIndex(card)
+	card.position = Vector2(numCards*10, 450)
+	card.faceup = true
 
 # Called on a card when it spawns to properly set up the hover/unhover signals
 func ConnectCardSignals(card):
@@ -76,16 +79,39 @@ func ConnectCardSignals(card):
 
 #endregion
 
-#region Other functions
+#region Do something to a card
 # Move a card based on a delta
 func UpdateCardPosition(card, delta):
 	assert(card, "UpdateCardPosition not called on a card!")
 	card.position = Vector2(clamp(card.position.x + delta.x, 0, screenSize.x),
 							 clamp(card.position.y + delta.y, 0, screenSize.y))
 
+# Handles highlighting and unhighlighting of cards
+func HighlightCard(card, hovered):
+	if (hovered):
+		ScaleCard(card, scaleForHover)
+		UpdateZIndex(card, 2)
+	else:
+		if !(cardBeingDragged):
+			ScaleCard(card, Vector2(1, 1))
+		UpdateZIndex(card)
+
+func UpdateAllZIndexes():
+	for card in allCards:
+		UpdateZIndex(card)
+
+func UpdateZIndex(card, index = null):
+	if index:
+		card.z_index = index
+		return
+	card.z_index = -(1+allCards.find(card))
+
 func ScaleCard(card, newScale):
 	card.scale = newScale * GameVariables.GAME_SCALE
 
+#endregion
+
+#region Other functions
 # Called any time the mouse is pressed. Does nothing if card is null
 func OnMousePress(card):
 	if (!card):
@@ -106,9 +132,14 @@ func OnMouseRelease(_card):
 		EndDrag()
 	if (cardThatWasBeingDragged):
 		ScaleCard(cardThatWasBeingDragged, scaleForHover)
-
+	
 # Called to start dragging a card
-func StartDrag(card = null):
+func StartDrag(card):
+	if card.inContainer && !card.inContainer.canPullCardsFrom:
+		return
+	allCards.erase(card)
+	allCards.insert(0, card)
+	UpdateAllZIndexes()
 	if card.inContainer && card.inContainer.canPullCardsFrom:
 		card.inContainer.TryRemoveCard(card)
 		cardBeingDragged = card
@@ -142,18 +173,7 @@ func OnHoveredOffCard(card):
 		HighlightCard(CardBeingHoveredMaybe, true)
 	else:
 		isHoveringCard = false
-
-# Handles highlighting and unhighlighting of cards
-func HighlightCard(card, hovered):
-	print(("Yes" if hovered else "No") + " hovering card " + card.name)
-	if (hovered):
-		ScaleCard(card, scaleForHover)
-		card.z_index = 2
-	else:
-		if !(cardBeingDragged):
-			ScaleCard(card, Vector2(1, 1))
-		card.z_index = -card.id
-
+	
 # Returns the first cardContainer the mouse is over, by z axis
 func RaycastCheckForCardContainer():
 	var space_state = get_world_2d().direct_space_state

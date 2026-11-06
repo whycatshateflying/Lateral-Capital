@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bby8uy2dq3mcv"
-path="res://.godot/imported/Playtest-card.jpg-11d639bc49719f95ad6ae2109139d5f0.ctex"
+uid="uid://c4fx07oa7se07"
+path="res://.godot/imported/Storm-crow.png-a88e672761cc841d534e25f2cca6c278.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Playtest-card.jpg"
-dest_files=["res://.godot/imported/Playtest-card.jpg-11d639bc49719f95ad6ae2109139d5f0.ctex"]
+source_file="res://Images/Storm-crow.png"
+dest_files=["res://.godot/imported/Storm-crow.png-a88e672761cc841d534e25f2cca6c278.ctex"]
 
 [params]
 

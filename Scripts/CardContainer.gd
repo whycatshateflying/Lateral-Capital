@@ -1,23 +1,22 @@
 extends Node2D
 
-var padding = .05				# Percentage of a card width that should be used as spacing between cards 
 var cardsInContainer = []
-var maxCardsInSelf: int = 1
+var maxCardsInSelf: int
 var originalScale: Vector2
-var canPullCardsFrom = false
+var canPullCardsFrom = true
 var canPutCardsInto = true
 
 # When first instantiated
 func _ready():
 	originalScale = scale * GameVariables.GAME_SCALE
-	SetMaxCardsAndScaleSelf(maxCardsInSelf)
+	scale = originalScale
+	SetMaxCards(8)
 
 func _process(_delta: float) -> void:
 	pass
 
-func SetMaxCardsAndScaleSelf(numCards):
+func SetMaxCards(numCards):
 	maxCardsInSelf = numCards
-	scale = Vector2((originalScale.x+(2*padding)) * maxCardsInSelf, originalScale.y+padding)
 
 # Add a card to the container
 func TryAddCard(card):
@@ -27,8 +26,6 @@ func TryAddCard(card):
 		return
 	cardsInContainer.append(card)
 	card.inContainer = self
-	SnapCardToSelf(card)
-	# card.get_node("Area2D/CollisionShape2D").disabled = !canPullCardsFrom
 	UpdatePositions()
 
 func TryRemoveCard(card):
@@ -39,10 +36,15 @@ func TryRemoveCard(card):
 
 # Make every card in the container spaced evenly
 func UpdatePositions():
+	var containerSprite = self.get_node("CardContainerImage")
+	var containerWidth = (containerSprite.get_rect().size.x)*containerSprite.global_scale.x
+	for i in range(cardsInContainer.size()):
+		cardsInContainer[i].position = self.position + Vector2(containerWidth/cardsInContainer.size()*(i+.5), 0) - Vector2(containerWidth/2,0)
+		cardsInContainer[i].get_parent().UpdateZIndex(cardsInContainer[i])
+		
+func UpdatePositionsOld():
+	var padding = .05
 	for i in range(cardsInContainer.size()):
 		var cardSprite = cardsInContainer[i].get_node("CardImage")
 		var cardWidth = (cardSprite.get_rect().size.x)*cardSprite.global_scale.x
 		cardsInContainer[i].position = self.position + Vector2((i+.5-cardsInContainer.size()/2.0)*(cardWidth+(2*padding*cardWidth)),0)
-
-func SnapCardToSelf(card):
-	card.position = self.position

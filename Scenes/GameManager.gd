@@ -8,7 +8,7 @@ func _ready() -> void:
 	for i in range(10):
 		var newCard = cardScene.instantiate()
 		$"../CardManager".add_child(newCard)
-		newCard.name = str(newCard.id)
+		newCard.name = str(i)
 	var playerHand = cardContainerScene.instantiate()
 	$"../CardManager".add_child(playerHand)
 	playerHand.position = Vector2(playerHand.get_parent().screenSize.x/2, playerHand.get_parent().screenSize.y/2)

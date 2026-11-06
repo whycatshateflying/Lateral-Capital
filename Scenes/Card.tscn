@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://cgqekym10df1u"]
 
 [ext_resource type="Script" uid="uid://d1as4o0mtq0sc" path="res://Scripts/Card.gd" id="1_pnb5n"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_u4fkt"]
-load_path = "res://.godot/imported/Playtest-card.jpg-11d639bc49719f95ad6ae2109139d5f0.ctex"
+[ext_resource type="Texture2D" uid="uid://c4fx07oa7se07" path="res://Images/Storm-crow.png" id="2_h8wm0"]
+[ext_resource type="Texture2D" uid="uid://bdv62bihc4aw7" path="res://Images/Playtest-card.png" id="3_3m7nw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2o32f"]
 size = Vector2(589, 831)
@@ -12,7 +11,10 @@ size = Vector2(589, 831)
 script = ExtResource("1_pnb5n")
 
 [node name="CardImage" type="Sprite2D" parent="." unique_id=1270786099]
-texture = SubResource("CompressedTexture2D_u4fkt")
+texture = ExtResource("2_h8wm0")
+
+[node name="CardBack" type="Sprite2D" parent="." unique_id=563087034]
+texture = ExtResource("3_3m7nw")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=438883073]
 
