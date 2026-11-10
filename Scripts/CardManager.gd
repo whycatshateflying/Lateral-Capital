@@ -2,17 +2,14 @@ extends Node2D
 
 const COLLISION_MASK_CARD = 1	# Bitmask for the card collider. Cards have a collision mask of 1, as opposed to other things like containers. Should always be 1
 const COLLISION_MASK_CARD_CONTAINER = 2	# Bitmask for the cardContainer collider. CardContainers have a collision mask of 2, as opposed to other things like cards. Should always be 2
+const SHORT_PRESS_DURATION = .135		# Below how many seconds is a "short" press?
+var mousePressTime: float			# Time, in sec, since the mouse started being pressed
 var numCards: int				# Increases when a new card is made. Used for designating ids
 var cardBeingDragged			# When a card is being dragged, it's stored here
 var isHoveringCard: bool		# If a card is being hovered, this is true
 var screenSize: Vector2			# Set when first instatiated
 var mousePos: Vector2			# Used for card movement. Updates with UpdateMousePos
 var clampedLastMousePos: Vector2		# Lags behind one frame, to be able to calculate a movement delta. Is clamped to bounds of the screen
-enum cardDragModes { TOGGLE, HOLD }
-var cardDragMode = cardDragModes.HOLD
-								# HOLD: click and drag for moving cards
-								# TOGGLE: click to pick up a card, and click to put it back down
-								# Goal is to make this obsolete, and automatically detect a "long" press
 var scaleForHover = Vector2(1.05, 1.05)	# Scale as a percentage of the og scale (stored in the GAME_SCALE const)
 var allCards = []				# Holds every card for z index calculations
 
@@ -24,7 +21,9 @@ func _ready() -> void:
 	clampedLastMousePos = Vector2(0, 0)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _process(delta):
+	mousePressTime = mousePressTime + delta
+	print(mousePressTime)
 	UpdateMousePosAndMoveCards()
 
 # Called every frame for card moving
@@ -49,12 +48,6 @@ func HandleMouseEvents(event):
 			OnMousePress(card)
 		elif event.is_released():
 			OnMouseRelease(card)
-	elif event.button_index == MOUSE_BUTTON_RIGHT && event.is_pressed():
-		if cardDragMode == cardDragModes.TOGGLE:
-			cardDragMode = cardDragModes.HOLD
-		elif cardDragMode == cardDragModes.HOLD:
-			cardDragMode = cardDragModes.TOGGLE
-		print("[DEBUG] Grab mode is now " + str(["TOGGLE", "HOLD"][cardDragMode]))
 	elif event.button_index == MOUSE_BUTTON_MIDDLE && event.is_pressed():
 		var cardBelowMouse = RaycastCheckForCard()
 		if cardBelowMouse:
@@ -114,21 +107,19 @@ func ScaleCard(card, newScale):
 #region Other functions
 # Called any time the mouse is pressed. Does nothing if card is null
 func OnMousePress(card):
+	mousePressTime = 0
 	if (!card):
 		return
 	ScaleCard(card, Vector2(1, 1))
-	if cardDragMode == cardDragModes.HOLD:
+	if (!cardBeingDragged):
 		StartDrag(card)
-	if cardDragMode == cardDragModes.TOGGLE:
-		if !cardBeingDragged:
-			StartDrag(card)
-		else:
-			EndDrag()
+	else:
+		EndDrag()
 
 # Called any time the mouse button is released.
 func OnMouseRelease(_card):
 	var cardThatWasBeingDragged = cardBeingDragged
-	if cardDragMode == cardDragModes.HOLD:
+	if (mousePressTime > SHORT_PRESS_DURATION):
 		EndDrag()
 	if (cardThatWasBeingDragged):
 		ScaleCard(cardThatWasBeingDragged, scaleForHover)
