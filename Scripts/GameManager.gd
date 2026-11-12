@@ -24,20 +24,42 @@ func SetupCards():
 
 # Hide everything, remove cards/cardContainers from existence
 func Cleanup():
-	CleanupCards()
+	CleanupGame()
 	TitleVisibility(false)
 	MainButtonsVisibility(false)
 	CreditsVisibility(false)
 	ToMenuButtonVisibility(false)
 
-func CleanupCards():
-	for i in CardManager.get_children():
-		CardManager.remove_child(i)
+func CleanupGame():
+	var allCardsCopy = CardManager.allCards
+	var count = allCardsCopy.size()
+	while allCardsCopy.size() > 0 && count > 0:
+		CardManager.UnloadCard(allCardsCopy[0])
+		count -= 1
+	for card in CardManager.allCards:
+		push_error("Could not unload " + card.name + "!")
+	
+	var allCardContainersCopy = CardManager.allCardContainers
+	count = allCardContainersCopy.size()
+	while allCardContainersCopy.size() > 0 && count>0:
+		CardManager.UnloadCardContainer(allCardContainersCopy[0])
+		count -= 1
+	for container in CardManager.allCardContainers:
+		push_error("Could not unload " + container.name + "!")
 
 func GoToMainMenu():
 	Cleanup()
 	MainButtonsVisibility(true)
 	TitleVisibility(true)
+
+func GoToPlay():
+	Cleanup()
+	ToMenuButtonVisibility(true)
+	SetupCards()
+
+func GoToCredits():
+	Cleanup()
+	CreditsVisibility(true)
 
 func MainButtonsVisibility(visible):
 	MainButtons.visible = visible
@@ -56,16 +78,13 @@ func QuitGame():
 
 #region Incoming button signals 
 func _on_play_button_pressed() -> void:
-	Cleanup()
-	ToMenuButtonVisibility(true)
-	SetupCards()
+	GoToPlay()
 
 func _on_exit_pressed() -> void:
 	QuitGame()
 
 func _on_credits_button_pressed() -> void:
-	Cleanup()
-	CreditsVisibility(true)
+	GoToCredits()
 
 func _on_back_from_credits_pressed() -> void:
 	GoToMainMenu()

@@ -1,10 +1,10 @@
 extends Node
 
 const SCALE_FOR_HOVER = Vector2(1.05, 1.05)	# Scale as a percentage of the og scale (stored in the GAME_SCALE const)
-var numCards: int				# Increases when a new card is made. Used for designating ids
 var cardBeingDragged			# When a card is being dragged, it's stored here
 var isHoveringCard: bool		# If a card is being hovered, this is true
-var allCards = []				# Holds every card for z index calculations
+var allCards = []				# Holds every card
+var allCardContainers = []		# Holds every CardContainer
 @onready var InputManager: Node = $"../../InputManager"
 
 #region Startup, every frame and input/event handling
@@ -16,7 +16,6 @@ func _ready() -> void:
 func _process(_delta):
 	UpdateMousePosAndMoveCards()
 
-
 # Handle all inputs (Mouse pressed/unpress, etc)
 func _input(event) -> void:
 	InputManager.HandleMouseEvents(event)
@@ -25,11 +24,10 @@ func _input(event) -> void:
 # Should change to include an array/list of all cards to properly z order and the like
 func OnCardSpawn(card):
 	ConnectCardSignals(card)
-	numCards += 1
-	card.scale = GameVariables.GAME_SCALE
 	allCards.append(card)
+	card.scale = GameVariables.GAME_SCALE
 	UpdateZIndex(card)
-	card.position = Vector2(numCards*10, 450)
+	card.position = Vector2(allCards.size()*10, 450)
 	card.faceup = true
 
 # Called on a card when it spawns to properly set up the hover/unhover signals
@@ -78,6 +76,21 @@ func UpdateZIndex(card, index = null):
 
 func ScaleCard(card, newScale):
 	card.scale = newScale * GameVariables.GAME_SCALE
+
+func UnloadCard(card):
+	print("Unloading " + card.name + "!")
+	allCards.erase(card)
+	UpdateAllZIndexes()
+	if card.inContainer:
+		card.inContainer.TryRemoveCard(card)
+	card.queue_free()
+
+func UnloadCardContainer(container):
+	print("Unloading " + container.name + "!")
+	allCardContainers.erase(container)
+	for card in container.cardsInContainer:
+		container.TryRemoveCard(card)
+	container.queue_free()
 
 #endregion
 

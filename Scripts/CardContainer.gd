@@ -8,6 +8,7 @@ var canPutCardsInto = true
 
 # When first instantiated
 func _ready():
+	get_parent().allCardContainers.append(self)
 	originalScale = scale * GameVariables.GAME_SCALE
 	scale = originalScale
 	SetMaxCards(14)

@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://dce4q71sog64d" path="res://Scripts/CardManager.gd" id="1_uu6xs"]
 [ext_resource type="Script" uid="uid://d3pybg1iaoeah" path="res://Scripts/InputManager.gd" id="3_kln2b"]
 [ext_resource type="PackedScene" uid="uid://8mraug75f3ed" path="res://Scenes/MainMenu.tscn" id="4_v1gob"]
-[ext_resource type="Script" uid="uid://dbnmd2kncfpvx" path="res://Scripts/MainMenu.gd" id="5_jw32o"]
 [ext_resource type="Texture2D" uid="uid://dfecs3p3uq2d1" path="res://Images/Playtest-button.png" id="5_v1gob"]
 
 [node name="Main" type="Node2D" unique_id=688892399]
@@ -16,7 +15,6 @@ script = ExtResource("3_kln2b")
 script = ExtResource("1_rgh2o")
 
 [node name="MainMenu" parent="GameManager" unique_id=497353217 instance=ExtResource("4_v1gob")]
-script = ExtResource("5_jw32o")
 
 [node name="Title" type="Label" parent="GameManager/MainMenu" unique_id=320185334]
 offset_right = 1920.0
