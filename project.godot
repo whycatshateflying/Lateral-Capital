@@ -13,6 +13,9 @@ config_version=5
 config/name="Lateral-Capital"
 run/main_scene="uid://c4meiq43eankj"
 config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="uid://dwg4xya5wcqw7"
+config/macos_native_icon="res://Images/Square-Logo-256x256.icns"
+config/windows_native_icon="res://Images/Square-Logo-256x256.ico"
 
 [autoload]
 
@@ -20,6 +23,8 @@ GameVariables="*uid://dl7owrayb1jeh"
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=984
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

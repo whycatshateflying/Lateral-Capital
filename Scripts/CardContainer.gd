@@ -8,9 +8,10 @@ var canPutCardsInto = true
 
 # When first instantiated
 func _ready():
+	get_parent().allCardContainers.append(self)
 	originalScale = scale * GameVariables.GAME_SCALE
 	scale = originalScale
-	SetMaxCards(8)
+	SetMaxCards(14)
 
 func _process(_delta: float) -> void:
 	pass
@@ -39,7 +40,8 @@ func UpdatePositions():
 	var containerSprite = self.get_node("CardContainerImage")
 	var containerWidth = (containerSprite.get_rect().size.x)*containerSprite.global_scale.x
 	for i in range(cardsInContainer.size()):
-		cardsInContainer[i].position = self.position + Vector2(containerWidth/cardsInContainer.size()*(i+.5), 0) - Vector2(containerWidth/2,0)
+		cardsInContainer[i].get_parent().AnimateCardToPosition(cardsInContainer[i], 
+												self.position + Vector2(containerWidth/cardsInContainer.size()*(i+.5), 0) - Vector2(containerWidth/2,0))
 		cardsInContainer[i].get_parent().UpdateZIndex(cardsInContainer[i])
 		
 func UpdatePositionsOld():
