@@ -5,7 +5,7 @@ extends Node
 @onready var MainButtons: VBoxContainer = $MainMenu/MainButtons
 @onready var Credits: VBoxContainer = $MainMenu/Credits
 @onready var OpenMenuButton: TextureButton = $OpenMenuButton
-@onready var Title: Label = $MainMenu/Title
+@onready var Title: TextureRect = $MainMenu/Title
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
