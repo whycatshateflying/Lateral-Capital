@@ -1,11 +1,11 @@
-extends Node2D
+extends Node
 
 const SCALE_FOR_HOVER = Vector2(1.05, 1.05)	# Scale as a percentage of the og scale (stored in the GAME_SCALE const)
 var numCards: int				# Increases when a new card is made. Used for designating ids
 var cardBeingDragged			# When a card is being dragged, it's stored here
 var isHoveringCard: bool		# If a card is being hovered, this is true
 var allCards = []				# Holds every card for z index calculations
-@onready var InputManager: Node = $"../InputManager"
+@onready var InputManager: Node = $"../../InputManager"
 
 #region Startup, every frame and input/event handling
 # Called when the node enters the scene tree for the first time.

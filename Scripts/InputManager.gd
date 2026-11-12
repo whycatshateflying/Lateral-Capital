@@ -6,7 +6,7 @@ const COLLISION_MASK_CARD_CONTAINER = 2	# Bitmask for the cardContainer collider
 @onready var mousePos: Vector2 = Vector2(0, 0)			# Used for card movement. Updates with UpdateMousePos
 @onready var clampedLastMousePos: Vector2 = Vector2(0, 0)		# Lags behind one frame, to be able to calculate a movement delta. Is clamped to bounds of the screen
 var mousePressTime: float			# Time, in sec, since the mouse started being pressed
-@onready var CardManager: Node2D = $"../CardManager"
+@onready var CardManager: Node = $"../GameManager/CardManager"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -37,31 +37,6 @@ func HandleMouseEvents(event):
 		if cardBelowMouse:
 			cardBelowMouse.Flip()
 			print("[DEBUG] Flipping card " + cardBelowMouse.name)
-
-	
-# Returns the first cardContainer the mouse is over, by z axis
-#func RaycastCheckForCardContainer():
-	#var space_state = get_viewport().world_2d.direct_space_state
-	#var parameters = PhysicsPointQueryParameters2D.new()
-	#parameters.position = get_viewport().get_mouse_position()
-	#parameters.collide_with_areas = true;
-	#parameters.collision_mask = COLLISION_MASK_CARD_CONTAINER
-	#
-	#var result = space_state.intersect_point(parameters)
-	## While the structure of a CardContainer is still CardContainer/Area2D/CollisionShape2D
-	## If that changes, reimplement this though
-	#return GetCardWithHighestZ(result)
-
-# Returns the first card the mouse is over, by z axis
-#func RaycastCheckForCard():
-	#var space_state = get_viewport().world_2d.direct_space_state
-	#var parameters = PhysicsPointQueryParameters2D.new()
-	#parameters.position = get_viewport().get_mouse_position()
-	#parameters.collide_with_areas = true;
-	#parameters.collision_mask = COLLISION_MASK_CARD
-	#
-	#var result = space_state.intersect_point(parameters)
-	#return GetCardWithHighestZ(result)
 
 # Returns the first card the mouse is over, by z axis
 func RaycastCheck(mask):
