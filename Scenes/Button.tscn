@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://brawlqoo13eup"]
+
+[ext_resource type="Texture2D" uid="uid://c2p4odr5tcu6k" path="res://Images/Playtest-button.png" id="1_p3102"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2o32f"]
+size = Vector2(256, 128)
+
+[node name="Button" type="Node2D" unique_id=799779882]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=539938245]
+texture_filter = 1
+texture = ExtResource("1_p3102")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=783788635]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1204840855]
+shape = SubResource("RectangleShape2D_2o32f")

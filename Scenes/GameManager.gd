@@ -1,6 +1,5 @@
 extends Node
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var cardScene = preload("res://Scenes/Card.tscn")
@@ -11,4 +10,4 @@ func _ready() -> void:
 		newCard.name = str(i)
 	var playerHand = cardContainerScene.instantiate()
 	$"../CardManager".add_child(playerHand)
-	playerHand.position = Vector2(playerHand.get_parent().screenSize.x/2, playerHand.get_parent().screenSize.y/2)
+	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y/2)
