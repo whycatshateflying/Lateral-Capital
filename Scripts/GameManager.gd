@@ -6,21 +6,30 @@ extends Node
 @onready var Credits: VBoxContainer = $MainMenu/Credits
 @onready var OpenMenuButton: TextureButton = $OpenMenuButton
 @onready var Title: TextureRect = $MainMenu/Title
+const cardScenePath = "res://Scenes/Card.tscn" 
+const cardContainerScenePath = "res://Scenes/CardContainer.tscn"
+var handCount = 6 # Number of cards in hand
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	GoToMainMenu()
 
+# Instantiate cards and add them to a cardContainer acting as the player hand
 func SetupCards():
-	var cardScene = preload("res://Scenes/Card.tscn")
-	var cardContainerScene = preload("res://Scenes/CardContainer.tscn")
-	for i in range(10):
+	var cardScene = preload(cardScenePath)
+	var container = preload(cardContainerScenePath)
+
+	var playerHand = container.instantiate()
+	CardManager.add_child(playerHand)
+	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2)
+	playerHand.SetMaxCards(handCount)
+
+	for i in range(handCount):
 		var newCard = cardScene.instantiate()
 		CardManager.add_child(newCard)
-		newCard.name = str(i)
-	var playerHand = cardContainerScene.instantiate()
-	CardManager.add_child(playerHand)
-	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y/2)
+		newCard.name = "Card " + str(i)
+		playerHand.TryAddCard(newCard)
+
 
 # Hide everything, remove cards/cardContainers from existence
 func Cleanup():

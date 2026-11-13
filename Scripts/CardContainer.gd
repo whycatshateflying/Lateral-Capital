@@ -1,7 +1,7 @@
 extends Node2D
 
 var cardsInContainer = []
-var maxCardsInSelf: int
+var maxCardsInSelf: int = 1
 var originalScale: Vector2
 var canPullCardsFrom = true
 var canPutCardsInto = true
@@ -11,10 +11,14 @@ func _ready():
 	get_parent().allCardContainers.append(self)
 	originalScale = scale * GameVariables.GAME_SCALE
 	scale = originalScale
-	SetMaxCards(14)
 
 func _process(_delta: float) -> void:
 	pass
+
+func GetHeight() -> float:
+	var containerSprite = self.get_node("CardContainerImage")
+	var containerHeight = (containerSprite.get_rect().size.y)*containerSprite.global_scale.y
+	return containerHeight;
 
 func SetMaxCards(numCards):
 	maxCardsInSelf = numCards
@@ -43,10 +47,3 @@ func UpdatePositions():
 		cardsInContainer[i].get_parent().AnimateCardToPosition(cardsInContainer[i], 
 												self.position + Vector2(containerWidth/cardsInContainer.size()*(i+.5), 0) - Vector2(containerWidth/2,0))
 		cardsInContainer[i].get_parent().UpdateZIndex(cardsInContainer[i])
-		
-func UpdatePositionsOld():
-	var padding = .05
-	for i in range(cardsInContainer.size()):
-		var cardSprite = cardsInContainer[i].get_node("CardImage")
-		var cardWidth = (cardSprite.get_rect().size.x)*cardSprite.global_scale.x
-		cardsInContainer[i].position = self.position + Vector2((i+.5-cardsInContainer.size()/2.0)*(cardWidth+(2*padding*cardWidth)),0)

@@ -2,8 +2,8 @@ extends Node
 
 
 const GAME_SCALE = Vector2(.3, .3)
-var screenSize: Vector2			# Set when first instatiated
-var currentScene
+@onready var screenSize = get_viewport().get_visible_rect().size
+#var currentScene
 
 func _ready() -> void:
 	screenSize = get_viewport().get_visible_rect().size
