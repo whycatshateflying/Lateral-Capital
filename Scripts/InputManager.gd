@@ -23,27 +23,40 @@ func UpdateMousePos():
 							clamp(mousePos.y, 0, GameVariables.screenSize.y))
 	mousePos = get_viewport().get_mouse_position()
 		
+func _input(event) -> void:
+	HandleMouseEvents(event)
+
 # Handles mouse events specifically
 func HandleMouseEvents(event):
 	if !event is InputEventMouseButton:
 		return
 	if event.button_index == MOUSE_BUTTON_LEFT:
-		var card = RaycastCheck(COLLISION_MASK_CARD)
-		if event.is_pressed():
-			CardManager.OnMousePress(card)
-		elif event.is_released():
-			CardManager.OnMouseRelease(card)
-	elif event.button_index == MOUSE_BUTTON_MIDDLE && event.is_pressed():
-		var cardBelowMouse = RaycastCheck(COLLISION_MASK_CARD)
-		if cardBelowMouse:
-			CardManager.FlipCard(cardBelowMouse)
-			print("[DEBUG] Flipping card " + cardBelowMouse.name)
+		HandleLeftClick(event)
+	elif event.button_index == MOUSE_BUTTON_MIDDLE: 
+		HandleMiddleClick(event)
+
+func HandleLeftClick(event):
+	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame
+	var card = RaycastCheck(currentMousePos, COLLISION_MASK_CARD)
+	if event.is_pressed():
+		CardManager.OnMousePress(card)
+	elif event.is_released():
+		CardManager.OnMouseRelease(card)
+
+func HandleMiddleClick(event):
+	if !event.is_pressed:
+		return
+	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame
+	var cardBelowMouse = RaycastCheck(currentMousePos, COLLISION_MASK_CARD)
+	if cardBelowMouse:
+		CardManager.FlipCard(cardBelowMouse)
+		print("[DEBUG] Flipping card " + cardBelowMouse.name)
 
 # Returns the first card the mouse is over, by z axis
-func RaycastCheck(mask):
+func RaycastCheck(pos, mask):
 	var space_state = get_viewport().world_2d.direct_space_state
 	var parameters = PhysicsPointQueryParameters2D.new()
-	parameters.position = get_viewport().get_mouse_position()
+	parameters.position = pos
 	parameters.collide_with_areas = true;
 	parameters.collision_mask = mask
 	

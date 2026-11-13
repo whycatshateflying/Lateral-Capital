@@ -16,18 +16,13 @@ func _ready() -> void:
 func _process(_delta):
 	UpdateMousePosAndMoveCards()
 
-# Handle all inputs (Mouse pressed/unpress, etc)
-func _input(event) -> void:
-	InputManager.HandleMouseEvents(event)
-
 # Called by a card when it spawns. Assigns the ids and increases the number of total cards in existence
 # Should change to include an array/list of all cards to properly z order and the like
 func OnCardSpawn(card):
 	ConnectCardSignals(card)
 	allCards.append(card)
-	card.scale = GameVariables.GAME_SCALE
+	ScaleCard(card, 1)
 	UpdateZIndex(card)
-	card.position = Vector2(allCards.size()*10, 450)
 	var random = RandomNumberGenerator.new()
 	SetCard(card, random.randi_range(1, 14), random.randi_range(0, 3))
 	FlipCard(card, true)
@@ -46,7 +41,6 @@ func UpdateMousePosAndMoveCards():
 #endregion
 
 #region Do something to a card
-
 # Move a card based on a delta
 func UpdateCardPosition(card, delta):
 	assert(card, "UpdateCardPosition not called on a card!")
@@ -127,7 +121,8 @@ func OnMouseRelease(_card):
 	if (InputManager.mousePressTime > InputManager.SHORT_PRESS_DURATION):
 		EndDrag()
 	if (cardThatWasBeingDragged):
-		ScaleCard(cardThatWasBeingDragged, SCALE_FOR_HOVER)
+		HighlightCard(cardThatWasBeingDragged, true)
+		#ScaleCard(cardThatWasBeingDragged, SCALE_FOR_HOVER)
 
 # Called to start dragging a card
 func StartDrag(card):
@@ -136,15 +131,14 @@ func StartDrag(card):
 	allCards.erase(card)
 	allCards.insert(0, card)
 	UpdateAllZIndexes()
+	cardBeingDragged = card
 	if card.inContainer && card.inContainer.canPullCardsFrom:
 		card.inContainer.TryRemoveCard(card)
-		cardBeingDragged = card
-	elif !card.inContainer:
-		cardBeingDragged = card
 
 # Called to end dragging any card
 func EndDrag():
-	var cardContainerBelow = InputManager.RaycastCheck(InputManager.COLLISION_MASK_CARD_CONTAINER)
+	var mousePos = get_viewport().get_mouse_position()
+	var cardContainerBelow = InputManager.RaycastCheck(mousePos, InputManager.COLLISION_MASK_CARD_CONTAINER)
 	if cardBeingDragged and cardContainerBelow and cardContainerBelow.canPutCardsInto:
 		cardContainerBelow.TryAddCard(cardBeingDragged)
 	var cardThatWasBeingDragged = cardBeingDragged
@@ -164,10 +158,10 @@ func OnHoveredOffCard(card):
 		return
 	HighlightCard(card, false)
 	# Extra logic to check whether a card is being hovered directly from one to another
-	var CardBeingHoveredMaybe = InputManager.RaycastCheck(InputManager.COLLISION_MASK_CARD)
-	if CardBeingHoveredMaybe:
-		HighlightCard(CardBeingHoveredMaybe, true)
-	else:
-		isHoveringCard = false
+	var mousePos = get_viewport().get_mouse_position()
+	var cardBeingHoveredMaybe = InputManager.RaycastCheck(mousePos, InputManager.COLLISION_MASK_CARD)
+	isHoveringCard = false
+	if cardBeingHoveredMaybe:
+		OnHoveredOverCard(cardBeingHoveredMaybe)
 	
 #endregion
