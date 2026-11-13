@@ -13,12 +13,43 @@ script = ExtResource("1_pnb5n")
 [node name="CardImage" type="Sprite2D" parent="." unique_id=1270786099]
 texture = ExtResource("2_h8wm0")
 
+[node name="TEMPORARY s+v container" type="VBoxContainer" parent="CardImage" unique_id=1882854137]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -502.5
+offset_top = -767.5
+offset_right = -141.5
+offset_bottom = -131.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TEMPORARY value" type="Label" parent="CardImage/TEMPORARY s+v container" unique_id=1741666398]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 315
+text = "0"
+horizontal_alignment = 1
+
+[node name="TEMPORARY suit" type="Label" parent="CardImage/TEMPORARY s+v container" unique_id=1172944304]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 147
+text = "none"
+horizontal_alignment = 1
+
 [node name="CardBack" type="Sprite2D" parent="." unique_id=563087034]
+visible = false
 texture = ExtResource("3_h8wm0")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=438883073]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2137045480]
+visible = false
 position = Vector2(-1.5, 1)
 shape = SubResource("RectangleShape2D_2o32f")
 

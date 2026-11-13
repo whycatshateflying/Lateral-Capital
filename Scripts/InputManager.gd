@@ -35,7 +35,7 @@ func HandleMouseEvents(event):
 	elif event.button_index == MOUSE_BUTTON_MIDDLE && event.is_pressed():
 		var cardBelowMouse = RaycastCheck(COLLISION_MASK_CARD)
 		if cardBelowMouse:
-			cardBelowMouse.Flip()
+			CardManager.FlipCard(cardBelowMouse)
 			print("[DEBUG] Flipping card " + cardBelowMouse.name)
 
 # Returns the first card the mouse is over, by z axis

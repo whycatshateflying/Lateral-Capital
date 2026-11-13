@@ -28,7 +28,9 @@ func OnCardSpawn(card):
 	card.scale = GameVariables.GAME_SCALE
 	UpdateZIndex(card)
 	card.position = Vector2(allCards.size()*10, 450)
-	card.faceup = true
+	var random = RandomNumberGenerator.new()
+	SetCard(card, random.randi_range(1, 14), random.randi_range(0, 3))
+	FlipCard(card, true)
 
 # Called on a card when it spawns to properly set up the hover/unhover signals
 func ConnectCardSignals(card):
@@ -44,6 +46,7 @@ func UpdateMousePosAndMoveCards():
 #endregion
 
 #region Do something to a card
+
 # Move a card based on a delta
 func UpdateCardPosition(card, delta):
 	assert(card, "UpdateCardPosition not called on a card!")
@@ -73,6 +76,18 @@ func UpdateZIndex(card, index = null):
 		card.z_index = index
 		return
 	card.z_index = -(1+allCards.find(card))
+
+# Flip this card. True for face up, false for face down
+func FlipCard(card, up = !card.faceup):
+	card.faceup = up
+	card.get_node("CardBack").visible = !card.faceup
+	card.get_node("CardImage").visible = card.faceup
+
+func SetCard(card, value = 1, suit = GameVariables.suits.SPADE):
+	card.value = value
+	card.suit = suit
+	card.get_node("CardImage/TEMPORARY s+v container/TEMPORARY value").text = str(value)
+	card.get_node("CardImage/TEMPORARY s+v container/TEMPORARY suit").text = ["Spade", "Heart", "Club", "Diamond"][suit]
 
 func ScaleCard(card, newScale):
 	card.scale = newScale * GameVariables.GAME_SCALE
