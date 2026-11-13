@@ -7,6 +7,7 @@ const COLLISION_MASK_CARD_CONTAINER = 2	# Bitmask for the cardContainer collider
 @onready var clampedLastMousePos: Vector2 = Vector2(0, 0)		# Lags behind one frame, to be able to calculate a movement delta. Is clamped to bounds of the screen
 var mousePressTime: float			# Time, in sec, since the mouse started being pressed
 @onready var CardManager: Node = $"../GameManager/CardManager"
+@onready var GameManager: Node = $"../GameManager"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -58,3 +59,19 @@ func GetCardWithHighestZ(cards):
 		if card.collider.get_parent().z_index > highest.collider.get_parent().z_index:
 			highest = card
 	return highest.collider.get_parent()
+
+
+func _on_play_button_pressed() -> void:
+	GameManager.GoToPlay()
+
+func _on_exit_pressed() -> void:
+	GameManager.QuitGame()
+
+func _on_credits_button_pressed() -> void:
+	GameManager.GoToCredits()
+
+func _on_back_from_credits_pressed() -> void:
+	GameManager.GoToMainMenu()
+
+func _on_open_menu_button_pressed() -> void:
+	GameManager.GoToMainMenu()

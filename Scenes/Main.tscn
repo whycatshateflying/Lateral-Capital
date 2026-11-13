@@ -75,8 +75,8 @@ texture_normal = ExtResource("5_v1gob")
 [node name="CardManager" type="Node" parent="GameManager" unique_id=387122420]
 script = ExtResource("1_uu6xs")
 
-[connection signal="pressed" from="GameManager/MainMenu/MainButtons/PlayButton" to="GameManager" method="_on_play_button_pressed"]
-[connection signal="pressed" from="GameManager/MainMenu/MainButtons/CreditsButton" to="GameManager" method="_on_credits_button_pressed"]
-[connection signal="pressed" from="GameManager/MainMenu/MainButtons/Exit" to="GameManager" method="_on_exit_pressed"]
-[connection signal="pressed" from="GameManager/MainMenu/Credits/BackFromCredits" to="GameManager" method="_on_back_from_credits_pressed"]
-[connection signal="pressed" from="GameManager/OpenMenuButton" to="GameManager" method="_on_open_menu_button_pressed"]
+[connection signal="pressed" from="GameManager/MainMenu/MainButtons/PlayButton" to="InputManager" method="_on_play_button_pressed"]
+[connection signal="pressed" from="GameManager/MainMenu/MainButtons/CreditsButton" to="InputManager" method="_on_credits_button_pressed"]
+[connection signal="pressed" from="GameManager/MainMenu/MainButtons/Exit" to="InputManager" method="_on_exit_pressed"]
+[connection signal="pressed" from="GameManager/MainMenu/Credits/BackFromCredits" to="InputManager" method="_on_back_from_credits_pressed"]
+[connection signal="pressed" from="GameManager/OpenMenuButton" to="InputManager" method="_on_open_menu_button_pressed"]

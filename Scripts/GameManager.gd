@@ -70,6 +70,9 @@ func GoToCredits():
 	Cleanup()
 	CreditsVisibility(true)
 
+func QuitGame():
+	get_tree().quit()
+
 func MainButtonsVisibility(visible):
 	MainButtons.visible = visible
 
@@ -81,24 +84,3 @@ func CreditsVisibility(visible):
 
 func TitleVisibility(visible):
 	Title.visible = visible
-
-func QuitGame():
-	get_tree().quit()
-
-#region Incoming button signals 
-func _on_play_button_pressed() -> void:
-	GoToPlay()
-
-func _on_exit_pressed() -> void:
-	QuitGame()
-
-func _on_credits_button_pressed() -> void:
-	GoToCredits()
-
-func _on_back_from_credits_pressed() -> void:
-	GoToMainMenu()
-
-func _on_open_menu_button_pressed() -> void:
-	GoToMainMenu()
-
-#endregion
