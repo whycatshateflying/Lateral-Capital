@@ -2,8 +2,8 @@ extends Node2D
 
 var inContainer			# References the container the card is in
 var faceup: bool		# true: face UP false: face DOWN
-var value				# Ace is 1, J-K = 11-13, Jo = 14
-var suit
+var value: int			# Ace is 1, J-K = 11-13, Jo = 14
+var suit: int			# Use GameVariables.SUITS
 signal hovered
 signal hovered_off
 
