@@ -3,8 +3,6 @@ extends Node
 const SHORT_PRESS_DURATION = .116		# Below how many seconds is a "short" press?
 const COLLISION_MASK_CARD = 1	# Bitmask for the card collider. Cards have a collision mask of 1, as opposed to other things like containers. Should always be 1
 const COLLISION_MASK_CARD_CONTAINER = 2	# Bitmask for the cardContainer collider. CardContainers have a collision mask of 2, as opposed to other things like cards. Should always be 2
-@onready var mousePos: Vector2 = Vector2(0, 0)			# Used for card movement. Updates with UpdateMousePos
-@onready var clampedLastMousePos: Vector2 = Vector2(0, 0)		# Lags behind one frame, to be able to calculate a movement delta. Is clamped to bounds of the screen
 var mousePressTime: float			# Time, in sec, since the mouse started being pressed
 @onready var CardManager: Node = $"../GameManager/CardManager"
 @onready var GameManager: Node = $"../GameManager"
@@ -17,12 +15,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	mousePressTime = mousePressTime + delta
 
-# Called every frame for card moving
-func UpdateMousePos():
-	clampedLastMousePos = Vector2(clamp(mousePos.x, 0, GameVariables.screenSize.x),
-							clamp(mousePos.y, 0, GameVariables.screenSize.y))
-	mousePos = get_viewport().get_mouse_position()
-		
 func _input(event) -> void:
 	HandleMouseEvents(event)
 
@@ -32,7 +24,9 @@ func HandleMouseEvents(event):
 		return
 	if event.button_index == MOUSE_BUTTON_LEFT:
 		HandleLeftClick(event)
-	elif event.button_index == MOUSE_BUTTON_MIDDLE: 
+	elif event.button_index == MOUSE_BUTTON_RIGHT: 
+		HandleRightClick(event)
+	elif event.button_index == MOUSE_BUTTON_MIDDLE:
 		HandleMiddleClick(event)
 
 func HandleLeftClick(event):
@@ -43,14 +37,23 @@ func HandleLeftClick(event):
 	elif event.is_released():
 		CardManager.OnMouseRelease(card)
 
-func HandleMiddleClick(event):
-	if !event.is_pressed:
+func HandleRightClick(event):
+	if !event.is_pressed():
 		return
 	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame
 	var cardBelowMouse = RaycastCheck(currentMousePos, COLLISION_MASK_CARD)
 	if cardBelowMouse:
 		CardManager.FlipCard(cardBelowMouse)
 		print("[DEBUG] Flipping card " + cardBelowMouse.name)
+
+func HandleMiddleClick(event):
+	if !event.is_pressed():
+		return
+	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame
+	var newCard = CardManager.CreateCard(currentMousePos)
+	var containerBelowMouse = RaycastCheck(currentMousePos, COLLISION_MASK_CARD_CONTAINER)
+	if containerBelowMouse:
+		containerBelowMouse.TryAddCard(newCard)
 
 # Returns the first card the mouse is over, by z axis
 func RaycastCheck(pos, mask):

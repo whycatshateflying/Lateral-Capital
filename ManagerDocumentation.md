@@ -51,8 +51,6 @@ These directly handle the main two purposes of InputManager, which are taking in
 	- Eventually if there's going to be keyboard input, there would be a seperate function for those events
 - HandleMouseEvents(event)
 	- Called every time a mouse event is fired, and calls the respective left/right/middle click functions
-- UpdateMousePosition
-	- CardManager calls this every frame to update the mouse position for card dragging
 ### "Helper" functions
 While all of InputManager's functions are just helping elsewhere, these are more in the middle of the "function call tree", and called by the Big functions/used to help the Big functions do their job
 - _process(delta)
@@ -60,9 +58,12 @@ While all of InputManager's functions are just helping elsewhere, these are more
 	- Currently just adds the time since the last mousedown for short/long press calculation
 - HandleLeftClick(event)
 	- Raycasts for a card and gives it to CardManager to handle (either in OnMousePress or OnMouseRelease)
-- HandleMiddleClick(event)
+- HandleRightClick(event)
 	- DEBUG FUNCTION primarily to test facedown cards and for insight for ai. Not intended to stay in the final release
 	- Raycasts for a card and flips it over via CardManager
+- HandleMiddleClick(event)
+	- DEBUG FUNCTION used to add cards
+	- Creates a card at the mouse position, and if there's a container below, adds it there
 - RaycastCheck(mask)
 	- Gotta be so fr, I do not know how this function works. Copied from the card tutorial and have never had a problem with it
 	- Raycasts from the mouse position to find any scenes beneath it matching the mask
@@ -92,29 +93,23 @@ These function just handle being hovered, clicked, or spawned, calling the other
 - OnMousePress(card)
 	- card is whatever the mouse press was over
 	- I debating a long time whether or not this goes in InputManager but I think I'm sure
-	- Deals with picking up/putting down cards, and rescales the card to be normal size
-	- Also sets the MousePress time to 0, for later checking by OnMouseRelease
+	- Deals with selecting/deselecting cards, and rescales the card to be normal size
+	- Also sets the MousePress time to 0, in that becomes a necessary thing to check
 - OnMouseRelease(_card)
-	- Based on the duration of the mouse press, decide whether to put down a card or toggle grab it
-	- Also rehover any card that would normally have been unhovered
+	- Does nothing anymore, for now
 - OnHoverOverCard
 	- When a card is being hovered over, this function is called, which highlights a card
 - OnHoveredOffCard
 	- When a card is being hovered off, this function is called, which ends the highlight, and maybe hovers another card directly after
 ### The "Boring" functions
 I call them the boring functions because they just do their thing and aren't ever interesting or very widely applicable
-- _process(_delta)
-	- Inherited from Node and run every frame. Currently the only thing that happens every frame here is updating the mouse position (held in InputManager) and moving cards in UpdateMousePosAndMoveCards
 - ConnectCardSignals(card)
 	- Sets up the custom signals for being hovered and unhovered of the card
-- UpdateMousePosAndMoveCards()
-	- Called every frame by _process
-	- It uhh.... Updates the mouse position in InputManager and moves any cards that need to be moved
 ### Do something to a card
 These functions directly modify something about a card, like moving it or scaling it or setting a value
-- UpdateCardPosition(card, delta)
-	- Snap a card based on a delta
-	- Used for card dragging cause otherwise a card would snap to the mouse position when you picked it up
+- UpdateCardPosition(card, pos)
+	- Snap a card to a position
+	- Used to do within-frame movements of a card rather than setting speed of AnimateCardToPosition to 0 
 - AnimateCardToPosition(card, cardPosition, speed = .1)
 	- Smoothly moves a card to position for speed seconds
 - UpdateZIndex(card, index = null)
@@ -127,16 +122,15 @@ These functions directly modify something about a card, like moving it or scalin
 	- Sets a card's suit and value to either the default (Ace of Spades) or whatever value is given
 - ScaleCard(card, newScale)
 	- Scales a card, taking into account GameVariables.GAME_SCALE
+- CreateCard(pos = Vector2(0, 0), value = null, suit = null)
+	- Creates a card at pos, making it a \<value\> of \<suit\>
+	- If no value or suit is provided, it's chosen at random
 - UnloadCard(card)
 	- Removes the card from the game, which involves removing it from allCards, any containers it might be in, and calling queue_free() on it
 - UnloadCardContainer(container)
 	- Removes the cardContainer from the game, which is basically the same process as cards
 ### The other functions
 These functions don't have a unifying theme, but they feel like they go together and they're the only ones left
-- StartDrag(card)
-	- Sets cardBeingDragged to card and make sure it's first in the Z index
-- EndDrag()
-	- Stops dragging whatever card is being dragged, placing it in an open cardContainer below, if applicable
 - HighlightCard(card, hovered)
 	- Handles highlighting and unhighlighting a card when its hovered
 	- "Highlighting" being the slight increase in size when you hover it

@@ -8,6 +8,8 @@ extends Node
 @onready var Title: TextureRect = $MainMenu/Title
 const cardScenePath = "res://Scenes/Card.tscn" 
 const cardContainerScenePath = "res://Scenes/CardContainer.tscn"
+@onready var cardScene = preload(cardScenePath)
+@onready var containerScene = preload(cardContainerScenePath)
 var handCount = 6 # Number of cards in hand
 
 # Called when the node enters the scene tree for the first time.
@@ -16,19 +18,14 @@ func _ready() -> void:
 
 # Instantiate cards and add them to a cardContainer acting as the player hand
 func SetupCards():
-	var cardScene = preload(cardScenePath)
-	var container = preload(cardContainerScenePath)
-
-	var playerHand = container.instantiate()
+	var playerHand = containerScene.instantiate()
 	CardManager.add_child(playerHand)
 	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2)
 	playerHand.SetMaxCards(handCount)
 
-	for i in range(handCount):
-		var newCard = cardScene.instantiate()
-		CardManager.add_child(newCard)
-		newCard.name = "Card " + str(i)
-		playerHand.TryAddCard(newCard)
+	#for i in range(handCount):
+		#var card = CardManager.CreateCard()
+		#playerHand.TryAddCard(card)
 
 
 # Hide everything, remove cards/cardContainers from existence

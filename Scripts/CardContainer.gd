@@ -5,10 +5,11 @@ var maxCardsInSelf: int = 1
 var originalScale: Vector2
 var canPullCardsFrom = true
 var canPutCardsInto = true
+@onready var CardManager = get_parent()
 
 # When first instantiated
 func _ready():
-	get_parent().allCardContainers.append(self)
+	CardManager.allCardContainers.append(self)
 	originalScale = scale * GameVariables.GAME_SCALE
 	scale = originalScale
 
@@ -31,6 +32,7 @@ func TryAddCard(card):
 		return
 	cardsInContainer.append(card)
 	card.inContainer = self
+	CardManager.UpdateCardPosition(card, position)
 	UpdatePositions()
 
 func TryRemoveCard(card):
@@ -39,11 +41,10 @@ func TryRemoveCard(card):
 		cardsInContainer.erase(card)
 		UpdatePositions()
 
-# Make every card in the container spaced evenly
+# Make every card in the container spaced evenly along the x, retaining their y
 func UpdatePositions():
 	var containerSprite = self.get_node("CardContainerImage")
 	var containerWidth = (containerSprite.get_rect().size.x)*containerSprite.global_scale.x
 	for i in range(cardsInContainer.size()):
-		cardsInContainer[i].get_parent().AnimateCardToPosition(cardsInContainer[i], 
-												self.position + Vector2(containerWidth/cardsInContainer.size()*(i+.5), 0) - Vector2(containerWidth/2,0))
-		cardsInContainer[i].get_parent().UpdateZIndex(cardsInContainer[i])
+		CardManager.AnimateCardToPosition(cardsInContainer[i], Vector2(self.position.x + containerWidth/cardsInContainer.size()*(i+.5) - containerWidth/2, cardsInContainer[i].position.y))
+		CardManager.UpdateZIndex(cardsInContainer[i])

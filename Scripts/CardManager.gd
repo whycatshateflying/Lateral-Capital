@@ -1,11 +1,12 @@
 extends Node
 
 const SCALE_FOR_HOVER = Vector2(1.05, 1.05)	# Scale as a percentage of the og scale (stored in the GAME_SCALE const)
-var cardBeingDragged			# When a card is being dragged, it's stored here
 var isHoveringCard: bool		# If a card is being hovered, this is true
 var allCards = []				# Holds every card
 var allCardContainers = []		# Holds every CardContainer
 @onready var InputManager: Node = $"../../InputManager"
+@onready var GameManager: Node = $".."
+var cardsSelected = []
 
 #region Startup, every frame and input/event handling
 # Called when the node enters the scene tree for the first time.
@@ -14,7 +15,7 @@ func _ready() -> void:
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	UpdateMousePosAndMoveCards()
+	pass
 
 # Called by a card when it spawns. Assigns the ids and increases the number of total cards in existence
 # Should change to include an array/list of all cards to properly z order and the like
@@ -25,6 +26,7 @@ func OnCardSpawn(card):
 	UpdateZIndex(card)
 	var random = RandomNumberGenerator.new()
 	SetCard(card, random.randi_range(1, 14), random.randi_range(0, 3))
+	card.name = "Card " + str(allCards.size())
 	FlipCard(card, true)
 
 # Called on a card when it spawns to properly set up the hover/unhover signals
@@ -32,20 +34,11 @@ func ConnectCardSignals(card):
 	card.connect("hovered", OnHoveredOverCard)
 	card.connect("hovered_off", OnHoveredOffCard)
 
-# Called every frame for card moving
-func UpdateMousePosAndMoveCards():
-	InputManager.UpdateMousePos()
-	if (cardBeingDragged):
-		UpdateCardPosition(cardBeingDragged, InputManager.mousePos-InputManager.clampedLastMousePos)
-
 #endregion
 
 #region Do something to a card
-# Move a card based on a delta
-func UpdateCardPosition(card, delta):
-	assert(card, "UpdateCardPosition not called on a card!")
-	card.position = Vector2(clamp(card.position.x + delta.x, 0, GameVariables.screenSize.x),
-							 clamp(card.position.y + delta.y, 0, GameVariables.screenSize.y))
+func UpdateCardPosition(card, pos):
+	card.position = pos
 
 func AnimateCardToPosition(card, cardPosition, speed = .1):
 	var tween = get_tree().create_tween()
@@ -57,8 +50,7 @@ func HighlightCard(card, hovered):
 		ScaleCard(card, SCALE_FOR_HOVER)
 		UpdateZIndex(card, 2)
 	else:
-		if !(cardBeingDragged):
-			ScaleCard(card, Vector2(1, 1))
+		ScaleCard(card, Vector2(1, 1))
 		UpdateZIndex(card)
 
 func UpdateAllZIndexes():
@@ -77,7 +69,7 @@ func FlipCard(card, up = !card.faceup):
 	card.get_node("CardBack").visible = !card.faceup
 	card.get_node("CardImage").visible = card.faceup
 
-func SetCard(card, value = 1, suit = GameVariables.suits.SPADE):
+func SetCard(card, value = 1, suit = GameVariables.SUITS.SPADE):
 	card.value = value
 	card.suit = suit
 	card.get_node("CardImage/TEMPORARY s+v container/TEMPORARY value").text = str(value)
@@ -85,6 +77,19 @@ func SetCard(card, value = 1, suit = GameVariables.suits.SPADE):
 
 func ScaleCard(card, newScale):
 	card.scale = newScale * GameVariables.GAME_SCALE
+
+func CreateCard(pos = Vector2(0, 0), value = null, suit = null):
+	var card = GameManager.cardScene.instantiate()
+	add_child(card)
+	UpdateCardPosition(card, pos)
+	var random = RandomNumberGenerator.new()
+	if value == null:
+		value = random.randi_range(1,14)
+	if suit == null:
+		suit = random.randi_range(0,3)
+	SetCard(card, value, suit)
+	print("Creating " + card.name + "!")
+	return card
 
 func UnloadCard(card):
 	print("Unloading " + card.name + "!")
@@ -104,46 +109,26 @@ func UnloadCardContainer(container):
 #endregion
 
 #region Other functions
-# Called any time the mouse is pressed. Does nothing if card is null
+
 func OnMousePress(card):
 	InputManager.mousePressTime = 0
 	if (!card):
 		return
 	ScaleCard(card, Vector2(1, 1))
-	if (!cardBeingDragged):
-		StartDrag(card)
+	SelectCard(card)
+
+func SelectCard(card, selected = !card.selected):
+	card.selected = selected
+	if card.selected:
+		cardsSelected.append(card)
+		AnimateCardToPosition(card, card.position + Vector2(0, -30))
 	else:
-		EndDrag()
+		cardsSelected.erase(card)
+		AnimateCardToPosition(card, card.position + Vector2(0, 30))
 
 # Called any time the mouse button is released.
 func OnMouseRelease(_card):
-	var cardThatWasBeingDragged = cardBeingDragged
-	if (InputManager.mousePressTime > InputManager.SHORT_PRESS_DURATION):
-		EndDrag()
-	if (cardThatWasBeingDragged):
-		HighlightCard(cardThatWasBeingDragged, true)
-		#ScaleCard(cardThatWasBeingDragged, SCALE_FOR_HOVER)
-
-# Called to start dragging a card
-func StartDrag(card):
-	if card.inContainer && !card.inContainer.canPullCardsFrom:
-		return
-	allCards.erase(card)
-	allCards.insert(0, card)
-	UpdateAllZIndexes()
-	cardBeingDragged = card
-	if card.inContainer && card.inContainer.canPullCardsFrom:
-		card.inContainer.TryRemoveCard(card)
-
-# Called to end dragging any card
-func EndDrag():
-	var mousePos = get_viewport().get_mouse_position()
-	var cardContainerBelow = InputManager.RaycastCheck(mousePos, InputManager.COLLISION_MASK_CARD_CONTAINER)
-	if cardBeingDragged and cardContainerBelow and cardContainerBelow.canPutCardsInto:
-		cardContainerBelow.TryAddCard(cardBeingDragged)
-	var cardThatWasBeingDragged = cardBeingDragged
-	cardBeingDragged = null
-	return cardThatWasBeingDragged
+	pass
 
 # When the mouse hovers a card
 func OnHoveredOverCard(card):
@@ -154,8 +139,6 @@ func OnHoveredOverCard(card):
 
 # When the mouse stops hovering a card
 func OnHoveredOffCard(card):
-	if cardBeingDragged:
-		return
 	HighlightCard(card, false)
 	# Extra logic to check whether a card is being hovered directly from one to another
 	var mousePos = get_viewport().get_mouse_position()
