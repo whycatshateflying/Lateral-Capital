@@ -17,6 +17,7 @@ func _ready() -> void:
 # Instantiate cards and add them to a cardContainer acting as the player hand
 func SetupCards():
 	var playerHand = CARD_CONTAINER_SCENE.instantiate()
+	playerHand.name = "Player Hand"
 	CardManager.add_child(playerHand)
 	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2)
 	playerHand.SetMaxCards(handCount)
@@ -26,6 +27,7 @@ func SetupCards():
 		playerHand.TryAddCard(card)
 
 	var enemyHand = CARD_CONTAINER_SCENE.instantiate()
+	enemyHand.name = "Enemy Hand"
 	CardManager.add_child(enemyHand)
 	enemyHand.position = Vector2(GameVariables.screenSize.x/2, enemyHand.GetHeight()/2)
 	enemyHand.SetMaxCards(handCount)
