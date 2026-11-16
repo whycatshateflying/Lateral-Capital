@@ -2,16 +2,18 @@ extends Node2D
 
 var cardsInContainer = []
 var maxCardsInSelf: int = 1
-var originalScale: Vector2
-var canPullCardsFrom = true
 var canPutCardsInto = true
+var canSelectCardsIn = true
 @onready var CardManager = get_parent()
+@onready var DistributeCards: HBoxContainer = $DistributeCards
+var slots = []
+var queueUpdatePos: bool = false
 
 # When first instantiated
 func _ready():
 	CardManager.allCardContainers.append(self)
-	originalScale = scale * GameVariables.GAME_SCALE
-	scale = originalScale
+	scale = scale * GameVariables.GAME_SCALE
+	DistributeCards.position = -DistributeCards.size / 2.0
 
 func _process(_delta: float) -> void:
 	pass
@@ -30,21 +32,45 @@ func TryAddCard(card):
 		return
 	if card in cardsInContainer:
 		return
+	AddSlot()
 	cardsInContainer.append(card)
 	card.inContainer = self
+	card.canBeSelected = canSelectCardsIn
 	CardManager.UpdateCardPosition(card, position)
 	UpdatePositions()
 
+func AddSlot():
+	var slot = Control.new()
+	slot.custom_minimum_size = Vector2(1, 1)
+	slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	DistributeCards.add_child(slot)
+	slots.append(slot)
+	return slot
+
 func TryRemoveCard(card):
 	if card in cardsInContainer:
+		RemoveSlot()
+		card.rotation = 0
 		card.inContainer = null
 		cardsInContainer.erase(card)
 		UpdatePositions()
 
-# Make every card in the container spaced evenly along the x, retaining their y
+func RemoveSlot(slot = slots[0]):
+	DistributeCards.remove_child(slot)
+	slots.erase(slot)
+	slot.queue_free()
+	
+# Make every card in the container spaced evenly along the x of the container
 func UpdatePositions():
-	var containerSprite = self.get_node("CardContainerImage")
-	var containerWidth = (containerSprite.get_rect().size.x)*containerSprite.global_scale.x
+	if (queueUpdatePos):
+		return
+	queueUpdatePos = true
+	await get_tree().process_frame
+	if (DistributeCards):
+		print("Position of DistributeCards is " + str(DistributeCards.position))
 	for i in range(cardsInContainer.size()):
-		CardManager.AnimateCardToPosition(cardsInContainer[i], Vector2(self.position.x + containerWidth/cardsInContainer.size()*(i+.5) - containerWidth/2, cardsInContainer[i].position.y))
-		CardManager.UpdateZIndex(cardsInContainer[i])
+		cardsInContainer[i].position = slots[i].get_global_transform() * (slots[i].size / 2.0)
+		cardsInContainer[i].rotation = slots[i].get_global_transform().get_rotation()
+		if cardsInContainer[i].selected:
+			CardManager.UpdateCardPosition(cardsInContainer[i], cardsInContainer[i].position + Vector2(0, -30))
+	queueUpdatePos = false

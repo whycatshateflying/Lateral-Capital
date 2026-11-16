@@ -27,7 +27,7 @@ func OnCardSpawn(card):
 	var random = RandomNumberGenerator.new()
 	SetCard(card, random.randi_range(1, 14), random.randi_range(0, 3))
 	card.name = "Card " + str(allCards.size())
-	card.canBeSelected = false
+	card.canBeSelected = true
 	FlipCard(card, true)
 
 # Called on a card when it spawns to properly set up the hover/unhover signals
@@ -91,7 +91,7 @@ func SelectCard(card, selected = !card.selected):
 		AnimateCardToPosition(card, card.position + Vector2(0, 30))
 
 func CreateCard(pos = Vector2(0, 0), value = null, suit = null):
-	var card = GameManager.cardScene.instantiate()
+	var card = GameManager.CARD_SCENE.instantiate()
 	add_child(card)
 	UpdateCardPosition(card, pos)
 	var random = RandomNumberGenerator.new()
