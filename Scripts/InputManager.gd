@@ -37,7 +37,7 @@ func HandleLeftClick(event):
 	elif event.is_released():
 		CardManager.OnMouseRelease(card)
 
-func HandleRightClick(event):
+func HandleMiddleClick(event):
 	if !event.is_pressed():
 		return
 	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame
@@ -46,7 +46,7 @@ func HandleRightClick(event):
 		CardManager.FlipCard(cardBelowMouse)
 		print("[DEBUG] Flipping card " + cardBelowMouse.name)
 
-func HandleMiddleClick(event):
+func HandleRightClick(event):
 	if !event.is_pressed():
 		return
 	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame

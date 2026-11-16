@@ -27,6 +27,7 @@ func OnCardSpawn(card):
 	var random = RandomNumberGenerator.new()
 	SetCard(card, random.randi_range(1, 14), random.randi_range(0, 3))
 	card.name = "Card " + str(allCards.size())
+	card.canBeSelected = false
 	FlipCard(card, true)
 
 # Called on a card when it spawns to properly set up the hover/unhover signals
@@ -78,6 +79,17 @@ func SetCard(card, value = 1, suit = GameVariables.SUITS.SPADE):
 func ScaleCard(card, newScale):
 	card.scale = newScale * GameVariables.GAME_SCALE
 
+func SelectCard(card, selected = !card.selected):
+	if !card.canBeSelected:
+		return
+	card.selected = selected
+	if card.selected:
+		cardsSelected.append(card)
+		AnimateCardToPosition(card, card.position + Vector2(0, -30))
+	else:
+		cardsSelected.erase(card)
+		AnimateCardToPosition(card, card.position + Vector2(0, 30))
+
 func CreateCard(pos = Vector2(0, 0), value = null, suit = null):
 	var card = GameManager.cardScene.instantiate()
 	add_child(card)
@@ -116,15 +128,6 @@ func OnMousePress(card):
 		return
 	ScaleCard(card, Vector2(1, 1))
 	SelectCard(card)
-
-func SelectCard(card, selected = !card.selected):
-	card.selected = selected
-	if card.selected:
-		cardsSelected.append(card)
-		AnimateCardToPosition(card, card.position + Vector2(0, -30))
-	else:
-		cardsSelected.erase(card)
-		AnimateCardToPosition(card, card.position + Vector2(0, 30))
 
 # Called any time the mouse button is released.
 func OnMouseRelease(_card):
