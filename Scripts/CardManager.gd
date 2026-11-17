@@ -68,6 +68,11 @@ func UpdateZIndex(card, index = null):
 		return
 	card.z_index = -(1+allCards.find(card))
 
+func MoveCardToTop(card):
+	allCards.erase(card)
+	allCards.insert(0, card)
+	UpdateAllZIndexes()
+
 # Flip this card. True for face up, false for face down
 func FlipCard(card, up = !card.faceup):
 	card.faceup = up
@@ -97,6 +102,8 @@ func SelectCard(card, selected = !card.selected):
 func CreateCard(pos = Vector2(0, 0), value = null, suit = null):
 	var card = GameManager.CARD_SCENE.instantiate()
 	add_child(card)
+	card.name = "Card " + str(allCards.size())
+	print("Creating " + card.name + "!")
 	UpdateCardPosition(card, pos)
 	var random = RandomNumberGenerator.new()
 	if value == null:
@@ -104,7 +111,7 @@ func CreateCard(pos = Vector2(0, 0), value = null, suit = null):
 	if suit == null:
 		suit = random.randi_range(0,3)
 	SetCard(card, value, suit)
-	print("Creating " + card.name + "!")
+	MoveCardToTop(card)
 	return card
 
 func UnloadCard(card):

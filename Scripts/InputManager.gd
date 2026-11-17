@@ -72,6 +72,8 @@ func GetCardWithHighestZ(cards):
 		return null
 	var highest = cards[0]
 	for card in cards:
+		if card != highest && card.collider.get_parent().z_index == highest.collider.get_parent().z_index:
+			push_warning("z index collision with " + highest.collider.get_parent().name + " and " + card.collider.get_parent().name + " at z index " + str(highest.collider.get_parent().z_index))
 		if card.collider.get_parent().z_index > highest.collider.get_parent().z_index:
 			highest = card
 	return highest.collider.get_parent()

@@ -34,7 +34,7 @@ func TryAddCard(card):
 	if card in cardsInContainer:
 		return
 	AddSlot()
-	cardsInContainer.append(card)
+	cardsInContainer.insert(0, card)
 	card.inContainer = self
 	card.canBeSelected = canSelectCardsIn
 	UpdatePositions()
