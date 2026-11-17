@@ -21,7 +21,7 @@ func SetupCards():
 	playerHand.name = "Player Hand"
 	CardManager.add_child(playerHand)
 	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2)
-	playerHand.SetMaxCards(handCount)
+	playerHand.SetMaxCards(handCount+8)
 
 	for i in range(handCount):
 		var card = CardManager.CreateCard()
@@ -47,8 +47,9 @@ func SetupCards():
 	discardPile.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y/1.65 - playerHand.GetHeight()/2)
 	discardPile.SetMaxCards(handCount)
 	discardPile.canSelectCardsIn = false
+	discardPile.pile = true
 
-func playCards():
+func PlayCards():
 	pass
 
 # Hide everything, remove cards/cardContainers from existence

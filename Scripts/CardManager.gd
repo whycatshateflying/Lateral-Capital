@@ -45,6 +45,10 @@ func AnimateCardToPosition(card, cardPosition, speed = .1):
 	var tween = get_tree().create_tween()
 	tween.tween_property(card, "position", cardPosition, speed)
 
+func AnimateCardToRotation(card, radians, speed = .1):
+	var tween = get_tree().create_tween()
+	tween.tween_property(card, "rotation", radians, speed)
+
 # Handles highlighting and unhighlighting of cards
 func HighlightCard(card, hovered):
 	if (hovered):

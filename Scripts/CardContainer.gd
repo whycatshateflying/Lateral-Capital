@@ -4,6 +4,7 @@ var cardsInContainer = []
 var maxCardsInSelf: int = 1
 var canPutCardsInto = true
 var canSelectCardsIn = true
+var pile: bool = false
 @onready var CardManager = get_parent()
 @onready var DistributeCards: HBoxContainer = $DistributeCards
 var slots = []
@@ -36,7 +37,6 @@ func TryAddCard(card):
 	cardsInContainer.append(card)
 	card.inContainer = self
 	card.canBeSelected = canSelectCardsIn
-	CardManager.UpdateCardPosition(card, position)
 	UpdatePositions()
 
 func AddSlot():
@@ -46,6 +46,10 @@ func AddSlot():
 	DistributeCards.add_child(slot)
 	slots.append(slot)
 	return slot
+
+func DrawCardToContainer(container, card = cardsInContainer[0]):
+	TryRemoveCard(card)
+	container.TryAddCard(card)
 
 func TryRemoveCard(card):
 	if card in cardsInContainer:
@@ -62,15 +66,22 @@ func RemoveSlot(slot = slots[0]):
 	
 # Make every card in the container spaced evenly along the x of the container
 func UpdatePositions():
-	if (queueUpdatePos):
+	if queueUpdatePos:
 		return
 	queueUpdatePos = true
 	await get_tree().process_frame
-	if (DistributeCards):
-		print("Position of DistributeCards is " + str(DistributeCards.position))
+	if pile:
+		for card in cardsInContainer:
+			CardManager.AnimateCardToPosition(card, position)
+			CardManager.AnimateCardToRotation(card, rotation)
+		queueUpdatePos = false
+		return
+
 	for i in range(cardsInContainer.size()):
-		cardsInContainer[i].position = slots[i].get_global_transform() * (slots[i].size / 2.0)
-		cardsInContainer[i].rotation = slots[i].get_global_transform().get_rotation()
+		var newPosition = slots[i].get_global_transform() * (slots[i].size / 2.0)
+		var newRotation = slots[i].get_global_transform().get_rotation()
 		if cardsInContainer[i].selected:
-			CardManager.UpdateCardPosition(cardsInContainer[i], cardsInContainer[i].position + Vector2(0, -30))
+			newPosition += Vector2(0, -30)
+		CardManager.AnimateCardToPosition(cardsInContainer[i], newPosition)
+		CardManager.AnimateCardToRotation(cardsInContainer[i], newRotation)
 	queueUpdatePos = false
