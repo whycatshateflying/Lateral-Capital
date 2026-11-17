@@ -5,6 +5,7 @@ extends Node
 @onready var MainButtons: VBoxContainer = $MainMenu/MainButtons
 @onready var Credits: VBoxContainer = $MainMenu/Credits
 @onready var OpenMenuButton: TextureButton = $OpenMenuButton
+@onready var PlayCardsButton: Button = $PlayCardsButton
 @onready var Title: TextureRect = $MainMenu/Title
 const CARD_SCENE = preload("uid://cgqekym10df1u")
 const CARD_CONTAINER_SCENE = preload("uid://vmpq4admagaw")
@@ -33,6 +34,22 @@ func SetupCards():
 	enemyHand.SetMaxCards(handCount)
 	enemyHand.rotate(PI)
 	enemyHand.canSelectCardsIn = false
+	
+	for i in range(handCount):
+		var card = CardManager.CreateCard()
+		enemyHand.TryAddCard(card)
+		CardManager.FlipCard(card)
+	
+	var discardPile = CARD_CONTAINER_SCENE.instantiate()
+	discardPile.scale.x = 1
+	discardPile.name = "Discard Pile"
+	CardManager.add_child(discardPile)
+	discardPile.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y/1.65 - playerHand.GetHeight()/2)
+	discardPile.SetMaxCards(handCount)
+	discardPile.canSelectCardsIn = false
+
+func playCards():
+	pass
 
 # Hide everything, remove cards/cardContainers from existence
 func Cleanup():
@@ -41,6 +58,7 @@ func Cleanup():
 	MainButtonsVisibility(false)
 	CreditsVisibility(false)
 	ToMenuButtonVisibility(false)
+	PlayCardsButtonVisibility(false)
 
 func CleanupGame():
 	var allCardsCopy = CardManager.allCards
@@ -67,6 +85,7 @@ func GoToMainMenu():
 func GoToPlay():
 	Cleanup()
 	ToMenuButtonVisibility(true)
+	PlayCardsButtonVisibility(true)
 	SetupCards()
 
 func GoToCredits():
@@ -75,6 +94,9 @@ func GoToCredits():
 
 func QuitGame():
 	get_tree().quit()
+	
+func PlaceCards():
+	pass
 
 func MainButtonsVisibility(visible):
 	MainButtons.visible = visible
@@ -87,3 +109,6 @@ func CreditsVisibility(visible):
 
 func TitleVisibility(visible):
 	Title.visible = visible
+
+func PlayCardsButtonVisibility(visible):
+	PlayCardsButton.visible = visible

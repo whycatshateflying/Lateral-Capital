@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://72vnoj4t56uu" path="res://Images/Logo.png" id="4_jw32o"]
 [ext_resource type="PackedScene" uid="uid://8mraug75f3ed" path="res://Scenes/MainMenu.tscn" id="4_v1gob"]
 [ext_resource type="Texture2D" uid="uid://dfecs3p3uq2d1" path="res://Images/Playtest-button.png" id="5_v1gob"]
+[ext_resource type="Texture2D" uid="uid://c1r6jcqahendh" path="res://Images/Button.png" id="6_jw32o"]
 
 [node name="Main" type="Node2D" unique_id=688892399]
 
@@ -71,6 +72,13 @@ offset_top = 28.0
 offset_right = 1892.0
 offset_bottom = 156.0
 texture_normal = ExtResource("5_v1gob")
+
+[node name="PlayCardsButton" type="Button" parent="GameManager" unique_id=245044871]
+offset_left = 1587.0
+offset_top = 826.0
+offset_right = 1853.0
+offset_bottom = 934.0
+icon = ExtResource("6_jw32o")
 
 [node name="CardManager" type="Node" parent="GameManager" unique_id=387122420]
 script = ExtResource("1_uu6xs")
