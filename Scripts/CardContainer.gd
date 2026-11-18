@@ -81,7 +81,7 @@ func UpdatePositions():
 		var newPosition = slots[i].get_global_transform() * (slots[i].size / 2.0)
 		var newRotation = slots[i].get_global_transform().get_rotation()
 		if cardsInContainer[i].selected:
-			newPosition += Vector2(0, -30)
+			newPosition += GameVariables.SELECTION_MOTION
 		CardManager.AnimateCardToPosition(cardsInContainer[i], newPosition)
 		CardManager.AnimateCardToRotation(cardsInContainer[i], newRotation)
 	queueUpdatePos = false

@@ -94,10 +94,10 @@ func SelectCard(card, selected = !card.selected):
 	card.selected = selected
 	if card.selected:
 		cardsSelected.append(card)
-		AnimateCardToPosition(card, card.position + Vector2(0, -30))
+		AnimateCardToPosition(card, card.position + GameVariables.SELECTION_MOTION)
 	else:
 		cardsSelected.erase(card)
-		AnimateCardToPosition(card, card.position + Vector2(0, 30))
+		AnimateCardToPosition(card, card.position - GameVariables.SELECTION_MOTION)
 
 func CreateCard(pos = Vector2(0, 0), value = null, suit = null):
 	var card = GameManager.CARD_SCENE.instantiate()

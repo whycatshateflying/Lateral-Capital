@@ -74,6 +74,7 @@ offset_bottom = 156.0
 texture_normal = ExtResource("5_v1gob")
 
 [node name="PlayCardsButton" type="Button" parent="GameManager" unique_id=245044871]
+visible = false
 offset_left = 1587.0
 offset_top = 826.0
 offset_right = 1853.0
