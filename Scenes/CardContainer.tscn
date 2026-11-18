@@ -20,3 +20,18 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1698746167]
 shape = SubResource("RectangleShape2D_2o32f")
+
+[node name="DistributeCards" type="HBoxContainer" parent="." unique_id=1225014929]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -322.0
+offset_top = -447.0
+offset_right = 322.0
+offset_bottom = 447.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+alignment = 1

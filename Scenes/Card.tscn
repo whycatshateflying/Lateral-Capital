@@ -43,13 +43,11 @@ text = "none"
 horizontal_alignment = 1
 
 [node name="CardBack" type="Sprite2D" parent="." unique_id=563087034]
-visible = false
 texture = ExtResource("3_h8wm0")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=438883073]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2137045480]
-visible = false
 position = Vector2(-1.5, 1)
 shape = SubResource("RectangleShape2D_2o32f")
 
