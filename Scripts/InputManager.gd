@@ -93,3 +93,6 @@ func _on_back_from_credits_pressed() -> void:
 
 func _on_open_menu_button_pressed() -> void:
 	GameManager.GoToMainMenu()
+
+func _on_play_cards_button_pressed() -> void:
+	GameManager.PlaceCards()

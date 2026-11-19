@@ -5,11 +5,13 @@ extends Node
 @onready var MainButtons: VBoxContainer = $MainMenu/MainButtons
 @onready var Credits: VBoxContainer = $MainMenu/Credits
 @onready var OpenMenuButton: TextureButton = $OpenMenuButton
-@onready var PlayCardsButton: Button = $PlayCardsButton
+@onready var PlayCardsButton: TextureButton = $PlayCardsButton
 @onready var Title: TextureRect = $MainMenu/Title
 const CARD_SCENE = preload("uid://cgqekym10df1u")
 const CARD_CONTAINER_SCENE = preload("uid://vmpq4admagaw")
 var handCount = 6 # Number of cards in hand
+var playerHand
+var discardPile
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -17,7 +19,7 @@ func _ready() -> void:
 
 # Instantiate cards and add them to a cardContainer acting as the player hand
 func SetupCards():
-	var playerHand = CARD_CONTAINER_SCENE.instantiate()
+	playerHand = CARD_CONTAINER_SCENE.instantiate()
 	playerHand.name = "Player Hand"
 	CardManager.add_child(playerHand)
 	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2)
@@ -40,7 +42,7 @@ func SetupCards():
 		enemyHand.TryAddCard(card)
 		CardManager.FlipCard(card)
 	
-	var discardPile = CARD_CONTAINER_SCENE.instantiate()
+	discardPile = CARD_CONTAINER_SCENE.instantiate()
 	discardPile.scale.x = 1
 	discardPile.name = "Discard Pile"
 	CardManager.add_child(discardPile)
@@ -48,9 +50,6 @@ func SetupCards():
 	discardPile.SetMaxCards(handCount)
 	discardPile.canSelectCardsIn = false
 	discardPile.pile = true
-
-func PlayCards():
-	pass
 
 # Hide everything, remove cards/cardContainers from existence
 func Cleanup():
@@ -77,6 +76,8 @@ func CleanupGame():
 		count -= 1
 	for container in CardManager.allCardContainers:
 		push_error("Could not unload " + container.name + "!")
+	playerHand = null
+	discardPile = null
 
 func GoToMainMenu():
 	Cleanup()
@@ -97,7 +98,17 @@ func QuitGame():
 	get_tree().quit()
 	
 func PlaceCards():
-	pass
+	var cardsSelectedCopy = CardManager.cardsSelected.duplicate()
+	if !CheckViableHand(cardsSelectedCopy):
+		for card in cardsSelectedCopy:
+			CardManager.SelectCard(card, false)
+		return
+	for card in cardsSelectedCopy:
+		CardManager.SelectCard(card, false)
+		playerHand.DrawCardToContainer(discardPile, card)
+
+func CheckViableHand(cards):
+	return true
 
 func MainButtonsVisibility(visible):
 	MainButtons.visible = visible

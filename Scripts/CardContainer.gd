@@ -37,6 +37,7 @@ func TryAddCard(card):
 	cardsInContainer.insert(0, card)
 	card.inContainer = self
 	card.canBeSelected = canSelectCardsIn
+	CardManager.MoveCardToTop(card)
 	UpdatePositions()
 
 func AddSlot():
