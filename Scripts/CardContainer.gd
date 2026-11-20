@@ -37,7 +37,6 @@ func TryAddCard(card):
 	cardsInContainer.insert(0, card)
 	card.inContainer = self
 	card.canBeSelected = canSelectCardsIn
-	CardManager.MoveCardToTop(card)
 	UpdatePositions()
 
 func AddSlot():
@@ -47,6 +46,15 @@ func AddSlot():
 	DistributeCards.add_child(slot)
 	slots.append(slot)
 	return slot
+
+func Shuffle():
+	cardsInContainer.shuffle()
+	if pile:
+		for card in cardsInContainer:
+			var random = RandomNumberGenerator.new()
+			CardManager.AnimateCardToPosition(card, card.position + Vector2(50, 0).rotated(random.randf_range(0, TAU)), .05)	# Push the cards out in random directions so we can see that it shuffles
+			await get_tree().process_frame
+	UpdatePositions()
 
 func DrawCardToContainer(container, card = cardsInContainer[0]):
 	TryRemoveCard(card)
@@ -72,9 +80,12 @@ func UpdatePositions():
 	queueUpdatePos = true
 	await get_tree().process_frame
 	if pile:
-		for card in cardsInContainer:
+		var cardsInContainerCopy = cardsInContainer
+		cardsInContainerCopy.reverse()
+		for card in cardsInContainerCopy:
 			CardManager.AnimateCardToPosition(card, position)
 			CardManager.AnimateCardToRotation(card, rotation)
+			CardManager.MoveCardToTop(card)
 		queueUpdatePos = false
 		return
 

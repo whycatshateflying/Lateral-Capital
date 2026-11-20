@@ -41,10 +41,9 @@ func HandleMiddleClick(event):
 	if !event.is_pressed():
 		return
 	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame
-	var cardBelowMouse = RaycastCheck(currentMousePos, COLLISION_MASK_CARD)
-	if cardBelowMouse:
-		CardManager.FlipCard(cardBelowMouse)
-		print("[DEBUG] Flipping card " + cardBelowMouse.name)
+	var containerBelowMouse = RaycastCheck(currentMousePos, COLLISION_MASK_CARD_CONTAINER)
+	if containerBelowMouse:
+		containerBelowMouse.Shuffle()
 
 func HandleRightClick(event):
 	if !event.is_pressed():
