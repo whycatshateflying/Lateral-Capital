@@ -90,7 +90,6 @@ func AddScaleToCard(card, key, scale):
 	card.scale = Vector2(GameVariables.GAME_SCALE, GameVariables.GAME_SCALE)
 	for scaleToApply in card.scaleModifiers:
 		card.scale += Vector2(card.scaleModifiers[scaleToApply], card.scaleModifiers[scaleToApply])
-	print("scaling " + card.name + " to " + str(card.scale))
 
 func SelectCard(card, selected = !card.selected):
 	if !card.canBeSelected:

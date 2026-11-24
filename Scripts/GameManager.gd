@@ -23,13 +23,13 @@ func SetupCards():
 	playerHand.name = "Player Hand"
 	CardManager.add_child(playerHand)
 	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2)
-	playerHand.SetMaxCards(handCount+8)
+	playerHand.SetMaxCards(handCount)
 
 	for i in range(handCount):
 		var card = CardManager.CreateCard()
 		playerHand.TryAddCard(card)
 
-	playerHand.AddScale(.5)
+	playerHand.AddScale(true, .3)
 
 	var enemyHand = CARD_CONTAINER_SCENE.instantiate()
 	enemyHand.name = "Enemy Hand"
@@ -52,6 +52,7 @@ func SetupCards():
 	discardPile.SetMaxCards(handCount)
 	discardPile.canSelectCardsIn = false
 	discardPile.pile = true
+	discardPile.AddScale(false, .1)
 
 # Hide everything, remove cards/cardContainers from existence
 func Cleanup():

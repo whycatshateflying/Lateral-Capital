@@ -34,6 +34,7 @@ func TryAddCard(card):
 	if card in cardsInContainer:
 		return
 	AddSlot()
+	CardManager.AddScaleToCard(card, "container", scale.y-GameVariables.GAME_SCALE)
 	cardsInContainer.insert(0, card)
 	card.inContainer = self
 	card.canBeSelected = canSelectCardsIn
@@ -60,12 +61,13 @@ func DrawCardToContainer(container, card = cardsInContainer[0]):
 	TryRemoveCard(card)
 	container.TryAddCard(card)
 
-func AddScale(newScale = 0):
-	scale = scale+Vector2(newScale, newScale)
-	print("container is " + str(scale))
+func AddScale(scaleOwnX, newScale = 0):
+	if scaleOwnX:
+		scale = scale+Vector2(maxCardsInSelf*newScale, newScale)
+	else:
+		scale = scale+Vector2(newScale, newScale)
 	for card in cardsInContainer:
 		CardManager.AddScaleToCard(card, "container", newScale)
-		print(card.name + " is " + str(card.scale))
 
 func TryRemoveCard(card):
 	if card in cardsInContainer:
