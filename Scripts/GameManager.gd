@@ -20,39 +20,54 @@ func _ready() -> void:
 # Instantiate cards and add them to a cardContainer acting as the player hand
 func SetupCards():
 	playerHand = CARD_CONTAINER_SCENE.instantiate()
-	playerHand.name = "Player Hand"
 	CardManager.add_child(playerHand)
-	playerHand.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2)
-	playerHand.SetMaxCards(handCount)
+	playerHand.Setup({"name" = "Player Hand", 
+					"position" = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y - playerHand.GetHeight()/2),
+					"maxCardsInSelf" = handCount,
+					"preStock" = 6,
+					"scaleSelfX" = true,
+					"scale" = .3,})
 
-	for i in range(handCount):
-		var card = CardManager.CreateCard()
-		playerHand.TryAddCard(card)
-
-	playerHand.AddScale(true, .3)
-
-	var enemyHand = CARD_CONTAINER_SCENE.instantiate()
-	enemyHand.name = "Enemy Hand"
-	CardManager.add_child(enemyHand)
-	enemyHand.position = Vector2(GameVariables.screenSize.x/2, enemyHand.GetHeight()/2)
-	enemyHand.SetMaxCards(handCount)
-	enemyHand.rotate(PI)
-	enemyHand.canSelectCardsIn = false
+	var enemyHand1 = CARD_CONTAINER_SCENE.instantiate()
+	CardManager.add_child(enemyHand1)
+	enemyHand1.Setup({"name" = "Enemy Hand 1",
+					"position" = Vector2(GameVariables.screenSize.x/2, enemyHand1.GetHeight()/2),
+					"maxCardsInSelf" = handCount,
+					"rotation" = PI,
+					"canSelectCardsIn" = false,
+					"preStock" = handCount,
+					"faceDown" = true})
 	
-	for i in range(handCount):
-		var card = CardManager.CreateCard()
-		enemyHand.TryAddCard(card)
-		CardManager.FlipCard(card)
+	var enemyHand2 = CARD_CONTAINER_SCENE.instantiate()
+	CardManager.add_child(enemyHand2)
+	enemyHand2.Setup({"name" = "Enemy Hand 2",
+					"position" = Vector2(enemyHand2.GetHeight()/2, GameVariables.screenSize.y/2),
+					"maxCardsInSelf" = handCount,
+					"rotation" = PI/2,
+					"canSelectCardsIn" = false,
+					"preStock" = handCount,
+					"faceDown" = true})
+	
+	var enemyHand3 = CARD_CONTAINER_SCENE.instantiate()
+	CardManager.add_child(enemyHand3)
+	enemyHand3.Setup({"name" = "Enemy Hand 3",
+					"position" = Vector2(GameVariables.screenSize.x - enemyHand3.GetHeight()/2, GameVariables.screenSize.y/2),
+					"maxCardsInSelf" = handCount,
+					"rotation" = 3*PI/2,
+					"canSelectCardsIn" = false,
+					"preStock" = handCount,
+					"faceDown" = true})
 	
 	discardPile = CARD_CONTAINER_SCENE.instantiate()
 	discardPile.scale.x = 1
-	discardPile.name = "Discard Pile"
 	CardManager.add_child(discardPile)
-	discardPile.position = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y/1.65 - playerHand.GetHeight()/2)
-	discardPile.SetMaxCards(handCount)
-	discardPile.canSelectCardsIn = false
-	discardPile.pile = true
-	discardPile.AddScale(false, .1)
+	discardPile.Setup({"name" = "Discard Pile",
+					"position" = Vector2(GameVariables.screenSize.x/2, GameVariables.screenSize.y/2 - discardPile.GetHeight()/2),
+					"maxCardsInSelf" = 52,
+					"canSelectCardsIn" = false,
+					"pile" = true,
+					"scaleSelfX" = false,
+					"scale" = .1,})
 
 # Hide everything, remove cards/cardContainers from existence
 func Cleanup():
@@ -110,7 +125,7 @@ func PlaceCards():
 		CardManager.SelectCard(card, false)
 		playerHand.DrawCardToContainer(discardPile, card)
 
-func CheckViableHand(cards):
+func CheckViableHand(_cards):
 	return true
 
 func MainButtonsVisibility(visible):

@@ -9,12 +9,26 @@ var pile: bool = false
 @onready var DistributeCards: HBoxContainer = $DistributeCards
 var slots = []
 var queueUpdatePos: bool = false
+var faceDown = false
 
 # When first instantiated
 func _ready():
 	CardManager.allCardContainers.append(self)
 	scale = scale * GameVariables.GAME_SCALE
 	DistributeCards.position = -DistributeCards.size / 2.0
+
+func Setup(options := {}):
+	name = options.get("name", name)
+	position = options.get("position", position)
+	rotate(options.get("rotation", 0.0))
+	SetMaxCards(options.get("maxCardsInSelf", maxCardsInSelf))
+	canSelectCardsIn = options.get("canSelectCardsIn", canSelectCardsIn)
+	AddScale(options.get("scaleSelfX", false), options.get("scale", 0))
+	faceDown = options.get("faceDown", faceDown)
+	pile = options.get("pile", pile)
+	for i in range(options.get("preStock", 0)):
+		var card = CardManager.CreateCard()
+		TryAddCard(card)
 
 func _process(_delta: float) -> void:
 	pass
@@ -38,6 +52,7 @@ func TryAddCard(card):
 	cardsInContainer.insert(0, card)
 	card.inContainer = self
 	card.canBeSelected = canSelectCardsIn
+	CardManager.FlipCard(card, !faceDown)
 	UpdatePositions()
 
 func AddSlot():
