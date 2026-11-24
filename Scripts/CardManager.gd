@@ -151,6 +151,8 @@ func OnMouseRelease(_card):
 func OnHoveredOverCard(card):
 	if isHoveringCard:
 		return
+	if !card.canBeSelected:
+		return
 	isHoveringCard = true
 	HighlightCard(card, true)
 
