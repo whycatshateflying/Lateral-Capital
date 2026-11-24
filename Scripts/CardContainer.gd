@@ -60,6 +60,13 @@ func DrawCardToContainer(container, card = cardsInContainer[0]):
 	TryRemoveCard(card)
 	container.TryAddCard(card)
 
+func AddScale(newScale = 0):
+	scale = scale+Vector2(newScale, newScale)
+	print("container is " + str(scale))
+	for card in cardsInContainer:
+		CardManager.AddScaleToCard(card, "container", newScale)
+		print(card.name + " is " + str(card.scale))
+
 func TryRemoveCard(card):
 	if card in cardsInContainer:
 		RemoveSlot()

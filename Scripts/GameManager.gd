@@ -29,6 +29,8 @@ func SetupCards():
 		var card = CardManager.CreateCard()
 		playerHand.TryAddCard(card)
 
+	playerHand.AddScale(.5)
+
 	var enemyHand = CARD_CONTAINER_SCENE.instantiate()
 	enemyHand.name = "Enemy Hand"
 	CardManager.add_child(enemyHand)

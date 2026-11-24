@@ -33,6 +33,8 @@ func HandleLeftClick(event):
 	var currentMousePos = get_viewport().get_mouse_position()	# Finds the mouse position rn instead of using mousePos cause otherwise it lags like half a frame
 	var card = RaycastCheck(currentMousePos, COLLISION_MASK_CARD)
 	if event.is_pressed():
+		if card:
+			print(card.name + "'s scale is " + str(card.scale))
 		CardManager.OnMousePress(card)
 	elif event.is_released():
 		CardManager.OnMouseRelease(card)

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c2be56s27jlj0" path="res://Images/Empty-container.png" id="2_8pqlr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2o32f"]
-size = Vector2(644, 900)
+size = Vector2(391.83334, 543)
 
 [node name="CardContainer" type="Node2D" unique_id=1291573236]
 scale = Vector2(6, 1)
@@ -19,6 +19,7 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1698746167]
+position = Vector2(0.41667175, -3.5)
 shape = SubResource("RectangleShape2D_2o32f")
 
 [node name="DistributeCards" type="HBoxContainer" parent="." unique_id=1225014929]
@@ -27,10 +28,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -322.0
-offset_top = -447.0
-offset_right = 322.0
-offset_bottom = 447.0
+offset_left = -195.5
+offset_top = -265.0
+offset_right = 196.0
+offset_bottom = 268.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3

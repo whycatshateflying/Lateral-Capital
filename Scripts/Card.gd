@@ -6,6 +6,7 @@ var value: int			# Ace is 1, J-K = 11-13, Jo = 14
 var suit: int			# Use GameVariables.SUITS
 var selected: bool = false
 var canBeSelected: bool
+var scaleModifiers = {}
 signal hovered
 signal hovered_off
 

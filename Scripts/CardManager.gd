@@ -1,6 +1,6 @@
 extends Node
 
-const SCALE_FOR_HOVER = Vector2(1.05, 1.05)	# Scale as a percentage of the og scale (stored in the GAME_SCALE const)
+const SCALE_FOR_HOVER = .05	# Scale as a percentage of the og scale (stored in the GAME_SCALE const)
 var isHoveringCard: bool		# If a card is being hovered, this is true
 var allCards = []				# Holds every card
 var allCardContainers = []		# Holds every CardContainer
@@ -22,7 +22,7 @@ func _process(_delta):
 func OnCardSpawn(card):
 	ConnectCardSignals(card)
 	allCards.append(card)
-	ScaleCard(card, 1)
+	card.scale = Vector2(GameVariables.GAME_SCALE, GameVariables.GAME_SCALE)
 	UpdateZIndex(card)
 	var random = RandomNumberGenerator.new()
 	SetCard(card, random.randi_range(1, 14), random.randi_range(0, 3))
@@ -52,10 +52,10 @@ func AnimateCardToRotation(card, radians, speed = .1):
 # Handles highlighting and unhighlighting of cards
 func HighlightCard(card, hovered):
 	if (hovered):
-		ScaleCard(card, SCALE_FOR_HOVER)
+		AddScaleToCard(card, "hover", SCALE_FOR_HOVER)
 		UpdateZIndex(card, 2)
 	else:
-		ScaleCard(card, Vector2(1, 1))
+		AddScaleToCard(card, "hover", 0)
 		UpdateZIndex(card)
 
 func UpdateAllZIndexes():
@@ -85,8 +85,12 @@ func SetCard(card, value = 1, suit = GameVariables.SUITS.SPADE):
 	card.get_node("CardImage/TEMPORARY s+v container/TEMPORARY value").text = str(value)
 	card.get_node("CardImage/TEMPORARY s+v container/TEMPORARY suit").text = ["Spade", "Heart", "Club", "Diamond"][suit]
 
-func ScaleCard(card, newScale):
-	card.scale = newScale * GameVariables.GAME_SCALE
+func AddScaleToCard(card, key, scale):
+	card.scaleModifiers[key] = scale
+	card.scale = Vector2(GameVariables.GAME_SCALE, GameVariables.GAME_SCALE)
+	for scaleToApply in card.scaleModifiers:
+		card.scale += Vector2(card.scaleModifiers[scaleToApply], card.scaleModifiers[scaleToApply])
+	print("scaling " + card.name + " to " + str(card.scale))
 
 func SelectCard(card, selected = !card.selected):
 	if !card.canBeSelected:
@@ -137,7 +141,7 @@ func OnMousePress(card):
 	InputManager.mousePressTime = 0
 	if (!card):
 		return
-	ScaleCard(card, Vector2(1, 1))
+	AddScaleToCard(card, "hover", 0)
 	SelectCard(card)
 
 # Called any time the mouse button is released.
